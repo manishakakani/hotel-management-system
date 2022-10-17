@@ -1,4 +1,10 @@
-import { ChevronLeft, ChevronRight, Close, Done } from "@mui/icons-material";
+import {
+  AddBox,
+  ChevronLeft,
+  ChevronRight,
+  Close,
+  Done,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -9,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import CheckAvailabilityAndBook from "../CheckAvailabilityAndBook";
 
 function RoomDetails() {
   const [indexSelected, setIndexSelected] = useState(-1);
@@ -18,6 +25,7 @@ function RoomDetails() {
   ];
   const lengthOfImageList = imageList.length;
   const [imageToShow, setImageToShow] = useState("");
+  const [bookRoom, setBookRoom] = useState(false);
 
   const changeImage = () => {
     if (indexSelected === lengthOfImageList - 1) {
@@ -53,6 +61,17 @@ function RoomDetails() {
       }
     }
   }, [indexSelected]);
+
+  const handleCheckAvailability = () => setBookRoom(true);
+
+  useEffect(() => {
+    if (bookRoom) {
+      document
+        .getElementById("availability")
+        .scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }, [bookRoom]);
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box
@@ -154,9 +173,21 @@ function RoomDetails() {
           </Box>
         </Box>
       </Box>
-      <Button variant="contained" color="primary" marginY={6}>
-        Check availability for booking{" "}
-      </Button>
+      {bookRoom ? null : (
+        <Button
+          variant="contained"
+          color="primary"
+          marginY={6}
+          onClick={handleCheckAvailability}
+        >
+          Check availability for booking{" "}
+        </Button>
+      )}
+      {bookRoom ? (
+        <section id="availability">
+          <CheckAvailabilityAndBook />
+        </section>
+      ) : null}
     </Box>
   );
 }
