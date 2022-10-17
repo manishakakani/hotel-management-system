@@ -24,11 +24,11 @@ function App() {
   });
   return (
     <Router>
-      <Navbar />
       <WindowsWidthContext.Provider value={winWidth}>
         <RoomToBookContext.Provider
           value={[roomBookContext, setRoomToBookContext]}
         >
+          <Navbar />
           <Routes>{AllRoutes.map((route) => route)}</Routes>
         </RoomToBookContext.Provider>
       </WindowsWidthContext.Provider>

@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom";
 import AdditionalAmenities from "../../Pages/AdditionalAmenities";
 import AllRoomsPage from "../../Pages/AllRoomsPage";
+import BookingHistory from "../../Pages/BookingHistory";
 import ConfirmToBook from "../../Pages/ConfirmToBook";
 import LoginPage from "../../Pages/LoginPage";
 import RoomDetails from "../../Pages/RoomDetails";
@@ -19,6 +20,7 @@ const AllRoutes = [
     element={<AdditionalAmenities />}
   />,
   <Route path="/room/:number/confirm" exact element={<ConfirmToBook />} />,
+  <Route path="/history" exact element={<BookingHistory />} />,
 ];
 
 export default AllRoutes;

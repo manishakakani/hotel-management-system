@@ -21,7 +21,6 @@ function WelcomePage() {
           maxHeight: "90%",
           minWidth: "70%",
           maxWidth: "90%",
-          marginTop: "10%",
         }}
         src={welcomeImage}
       />
