@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import CheckAvailabilityAndBook from "../CheckAvailabilityAndBook";
+import CheckAvailability from "../CheckAvailability";
 
 function RoomDetails() {
   const [indexSelected, setIndexSelected] = useState(-1);
@@ -185,7 +185,18 @@ function RoomDetails() {
       )}
       {bookRoom ? (
         <section id="availability">
-          <CheckAvailabilityAndBook />
+          <CheckAvailability
+            roomDetails={{
+              roomNumber: "201",
+              roomType: "Deluxe",
+              amenities: [
+                "Free Wifi",
+                "Complementary Breakfast",
+                "Swimming Pool",
+              ],
+              costPerDay: "9.99",
+            }}
+          />
         </section>
       ) : null}
     </Box>

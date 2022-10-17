@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation, useParams } from "react-router";
@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
+import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 
 function SignUpPage() {
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
@@ -23,7 +24,7 @@ function SignUpPage() {
     useForm();
   const { pathname } = useLocation();
   const parms = useParams();
-  const winWidth = window.innerWidth;
+  const winWidth = useContext(WindowsWidthContext);
   const { errors, isValid } = formState;
   const navigate = useNavigate();
 

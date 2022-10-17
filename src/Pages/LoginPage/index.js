@@ -16,9 +16,10 @@ import {
 } from "@mui/material";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import { useNavigate } from "react-router-dom";
+import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 
 const LoginPage = () => {
-  const winWidth = window.innerWidth;
+  const winWidth = React.useContext(WindowsWidthContext);
   const navigate = useNavigate();
   const isUserLogged = localStorage.getItem("logged");
   const [openErrorBar, setOpenErrorBar] = useState(false);
