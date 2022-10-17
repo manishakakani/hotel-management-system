@@ -1,4 +1,4 @@
-import { AppBar, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {
@@ -6,23 +6,23 @@ function Navbar() {
   const handleToHome = () => navigate("/");
   const handleLogin = () => navigate("/login");
   return (
-    <AppBar
-      sx={{
+    <nav
+      style={{
         width: "100%",
-        backgroundColor: "primary",
-        height: "10%",
+        "background-color": "#e86537",
+        height: "64px",
         display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingX: "1rem",
+        "flex-direction": "row",
+        "align-items": "center",
+        "justify-content": "space-between",
       }}
     >
       <Typography
         variant="h5"
-        color={"tertiary"}
+        color={"#fff"}
         onClick={handleToHome}
-        sx={{ cursor: "pointer" }}
+        sx={{ cursor: "pointer", paddingX: "0.2rem" }}
+        paddingLeft={6}
       >
         Hotel Management System
       </Typography>
@@ -30,10 +30,11 @@ function Navbar() {
         component={Button}
         sx={{ color: "#F5F5F5" }}
         onClick={handleLogin}
+        paddingRight={4}
       >
         Login
       </Typography>
-    </AppBar>
+    </nav>
   );
 }
 

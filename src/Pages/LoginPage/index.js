@@ -102,11 +102,15 @@ const LoginPage = () => {
     <Box
       sx={{
         display: "flex",
+        flexDirection: "column",
         height: "80vh",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
+      <Typography variant="h2" color="primary">
+        Log In
+      </Typography>
       <form
         onSubmit={validatePassword && onSubmit}
         style={{

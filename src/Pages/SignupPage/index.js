@@ -87,13 +87,20 @@ function SignUpPage() {
 
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
+      <Typography variant="h2" color="primary" marginTop={2}>
+        Sign Up
+      </Typography>
       <Grid
         container
-        sx={{ justifyContent: "center", alignItems: "center", height: "100vh" }}
+        sx={{ justifyContent: "center", alignItems: "center" }}
         spacing={6}
-        marginTop={8}
+        marginTop={2}
       >
         <Grid item>
           <form
