@@ -1,9 +1,11 @@
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
+import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 
 function ConfirmToBook() {
+  const winWidth = useContext(WindowsWidthContext);
   const navigate = useNavigate();
   const [roomBookContext, setRoomToBookContext] = useContext(RoomToBookContext);
   const [arrivalDate, setArrivalDate] = useState();
@@ -11,25 +13,22 @@ function ConfirmToBook() {
   useEffect(() => {
     if (!roomBookContext) navigate("/rooms");
     else {
-      let arrdate = new Date(roomBookContext.arrivalDate);
-      const datestring =
-        arrdate.getDate() +
-        "-" +
-        (arrdate.getMonth() + 1) +
-        "-" +
-        arrdate.getFullYear();
-      setArrivalDate(datestring);
+      setArrivalDate(roomBookContext.arrivalDate.toString());
     }
   }, []);
 
   return (
-    <Box display="flex" justifyContent="center">
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Typography variant="h3" marginY={4} color="primary">
+        Booking Details
+      </Typography>
       {roomBookContext ? (
         <Box
-          width="80%"
+          width={winWidth < 500 ? "300px" : "500px"}
+          marginY={4}
           display="flex"
           flexDirection="column"
-          alignItems="center"
+          alignItems="flex-start"
         >
           <Box display="flex" justifyContext="space-between">
             <Typography variant="h6" color="primary">
@@ -65,34 +64,50 @@ function ConfirmToBook() {
             </Typography>
             <Typography variant="h6">
               {" "}
-              {roomBookContext.duraction} Days{" "}
+              {roomBookContext.duration} Days{" "}
             </Typography>
           </Box>
           <Divider />
-          <Box display="flex" justifyContext="space-between">
+          <Box display="flex" justifyContext="space-between" flexWrap="wrap">
             <Typography variant="h6" color="primary">
               Amenities :
             </Typography>
-            <Box paddingLeft={4}>
+            <Box
+              paddingLeft={4}
+              display="flex"
+              justifyContext="space-around"
+              alignItems="center"
+              flexWrap="wrap"
+            >
               {" "}
-              {roomBookContext.amenities.length
+              {roomBookContext.amenities && roomBookContext.amenities.length
                 ? roomBookContext.amenities.map((am) => {
-                    <Typography variant="subtitle2">{am}</Typography>;
+                    return (
+                      <Typography variant="subtitle2">{am},&nbsp;</Typography>
+                    );
                   })
                 : "No Free Amenities"}
             </Box>
           </Box>
           <Divider />
-          <Box display="flex" justifyContext="space-between">
+          <Box display="flex" justifyContext="space-between" flexWrap="wrap">
             <Typography variant="h6" color="primary">
               Additional Amenities :
             </Typography>
-            <Box paddingLeft={4}>
+            <Box
+              paddingLeft={4}
+              display="flex"
+              justifyContext="space-around"
+              alignItems="center"
+              flexWrap="wrap"
+            >
               {" "}
               {roomBookContext.additionalAmenities &&
               roomBookContext.additionalAmenities.length
                 ? roomBookContext.additionalAmenities.map((am) => {
-                    <Typography variant="subtitle2">{am}</Typography>;
+                    return (
+                      <Typography variant="subtitle2">{am},&nbsp;</Typography>
+                    );
                   })
                 : "No Added Amenities"}
             </Box>
@@ -114,6 +129,9 @@ function ConfirmToBook() {
           <Divider />
         </Box>
       ) : null}
+      <Button marginY={4} variant="contained">
+        Confirm Booking
+      </Button>
     </Box>
   );
 }
