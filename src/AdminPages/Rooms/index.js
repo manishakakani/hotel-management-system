@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import RoomsForm from "./RoomsForm.js";
+import RoomsForm from "./RoomsForm";
 
 function Rooms() {
   const [addNew, setAddNew] = useState(false);

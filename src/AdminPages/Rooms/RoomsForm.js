@@ -13,11 +13,18 @@ import {
   Chip,
   OutlinedInput,
   MenuItem,
+  IconButton,
+  Divider,
+  ImageList,
+  ImageListItem,
+  Tooltip,
+  Grid,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import SuccessSnackBar from "../../../Components/SuccessSnackBar";
-import ErrorSnackBar from "../../../Components/ErrorSnackBar";
-import WindowsWidthContext from "../../../Contexts/WindowsWidthContext";
+import { Delete, PhotoCamera } from "@mui/icons-material";
+import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
+import SuccessSnackBar from "../../Components/SuccessSnackBar";
+import ErrorSnackBar from "../../Components/ErrorSnackBar";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,12 +51,14 @@ function RoomsForm({ isNew = true, details = {}, close }) {
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
   const [openErrorBar, setOpenErrorBar] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [imageList, setImageList] = useState([]);
 
   const { errors } = formState;
 
   useEffect(() => {}, []);
 
   const formSubmitted = (data) => {
+    data["Images"] = imageList;
     setOpenBackdrop(true);
     setTimeout(() => {
       setOpenBackdrop(false);
@@ -66,6 +75,16 @@ function RoomsForm({ isNew = true, details = {}, close }) {
   const handleErrorBarClose = () => {
     setOpenBackdrop(false);
     setOpenErrorBar(false);
+  };
+
+  const handleCapture = (event) => {
+    const file = event.target.files[0];
+    setImageList([...imageList, file]);
+  };
+
+  const handleRemoveImage = (event, idx) => {
+    if (event.type === "click")
+      setImageList(imageList.filter((img, indx) => indx !== idx));
   };
 
   return (
@@ -94,6 +113,99 @@ function RoomsForm({ isNew = true, details = {}, close }) {
               width: "100%",
             }}
           >
+            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+              <input
+                accept="image/*"
+                id="icon-button-photo"
+                style={{ display: "none" }}
+                onChange={handleCapture}
+                type="file"
+              />
+              <label htmlFor="icon-button-photo">
+                <Tooltip title="Upload Images">
+                  <IconButton color="primary" component="span">
+                    <PhotoCamera />
+                  </IconButton>
+                </Tooltip>
+              </label>
+              {!imageList.length ? (
+                <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
+                  Please add image
+                </FormHelperText>
+              ) : (
+                <Box>
+                  {imageList.map((img, idx) => {
+                    return (
+                      <Box>
+                        <Grid container>
+                          <Grid item xs={0} md={2} />
+                          <Grid
+                            item
+                            xs={10}
+                            md={8}
+                            lg={6}
+                            display="flex"
+                            alignItems="center"
+                          >
+                            <Typography variant="subtitle2">
+                              {img.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <Tooltip title={"Delete Image"}>
+                              <IconButton
+                                color="error"
+                                onClick={(event) =>
+                                  handleRemoveImage(event, idx)
+                                }
+                              >
+                                <Delete />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
+                        </Grid>
+                        {idx !== imageList.length - 1 ? (
+                          <Divider variant="inset" component="div" />
+                        ) : null}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              )}
+              {!isNew && details.images && details.images.length ? (
+                <ImageList
+                  sx={{ maxWidth: 500, maxHeight: 450 }}
+                  cols={3}
+                  rowHeight={164}
+                >
+                  {details.images && details.images.length
+                    ? details.images.map((item) => (
+                        <ImageListItem key={item.img}>
+                          <img
+                            src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                            srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                            alt={item.title}
+                            loading="lazy"
+                          />
+                          <Tooltip title="Delete Image">
+                            <IconButton
+                              color="error"
+                              sx={{
+                                backgroundColor: "rgba(0,0,0,0.25)",
+                                position: "absolute",
+                                top: 1,
+                                right: 1,
+                              }}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Tooltip>
+                        </ImageListItem>
+                      ))
+                    : null}
+                </ImageList>
+              ) : null}
+            </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="RoomNumber">
                 Room Number *
@@ -283,18 +395,17 @@ function RoomsForm({ isNew = true, details = {}, close }) {
               close={handleSuccessBarClose}
               msg={
                 isNew
-                  ? "Amenity successfully added!"
-                  : "Amenity successfully updated!"
+                  ? "Room successfully added!"
+                  : "Room details successfully updated!"
               }
             />
-
             <ErrorSnackBar
               open={openErrorBar}
               close={handleErrorBarClose}
               msg={
                 isNew
-                  ? "Sorry! Amenity couldnot be added."
-                  : "Sorry! Amenity couldnot be updated."
+                  ? "Sorry! Room couldnot be added."
+                  : "Sorry! Room details couldnot be updated."
               }
               subtitle="Please try again after sometime."
             />

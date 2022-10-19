@@ -2,6 +2,7 @@ import { Route } from "react-router-dom";
 import Amenities from "../../AdminPages/Amenities";
 import Hotel from "../../AdminPages/Hotel";
 import Rooms from "../../AdminPages/Rooms";
+import Staff from "../../AdminPages/Staff";
 import AdditionalAmenities from "../../Pages/AdditionalAmenities";
 import AllRoomsPage from "../../Pages/AllRoomsPage";
 import BookingHistory from "../../Pages/BookingHistory";
@@ -32,6 +33,7 @@ const AllRoutes = [
   <Route path="/admin/amenities" exact element={<Amenities />} />,
   <Route path="/admin/hotel" exact element={<Hotel />} />,
   <Route path="/admin/rooms" exact element={<Rooms />} />,
+  <Route path="/admin/staff" exact element={<Staff />} />,
 ];
 
 export default AllRoutes;
