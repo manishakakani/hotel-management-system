@@ -1,44 +1,114 @@
-import { Box, Button, Typography } from "@mui/material";
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Menu } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Drawer,
+  List,
+  ListItemText,
+  ListItem,
+  ListItemButton,
+  Typography,
+  IconButton,
+  ListItemIcon,
+} from "@mui/material";
+import { useContext, useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
+import adminNavItems from "../AdminNav/adminNavItems";
+import resortImage from "../../assets/images/resort.jpg";
 
 function Navbar() {
   const winWidth = useContext(WindowsWidthContext);
   const navigate = useNavigate();
   const handleToHome = () => navigate("/");
   const handleLogin = () => navigate("/login");
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const toggleDrawer = () => setOpenDrawer((prevVal) => !prevVal);
+  const handleLogout = () => navigate("/");
+
   return (
-    <nav
-      style={{
-        width: "100%",
-        "background-color": "#e86537",
-        height: "64px",
-        display: "flex",
-        "flex-direction": "row",
-        "align-items": "center",
-        "justify-content": "space-between",
-      }}
-    >
-      <Typography
-        variant="h5"
-        color={"#fff"}
-        onClick={handleToHome}
-        sx={{ cursor: "pointer", paddingX: "0.2rem" }}
-        marginLeft={winWidth < 500 ? 2 : 8}
+    <Box>
+      <Drawer open={openDrawer} onClose={toggleDrawer}>
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleDrawer}
+          onKeyDown={toggleDrawer}
+        >
+          <Box
+            width="100%"
+            height="50%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <img height="250px" width="250px" src={resortImage} />
+          </Box>
+          <List sx={{ marginTop: 6 }}>
+            {adminNavItems.map(({ icon, name, route }, index) => (
+              <NavLink
+                to={route}
+                style={({ isActive }) => ({
+                  color: isActive ? "#e86537" : "#000",
+                  textDecoration: "none",
+                })}
+              >
+                <ListItem
+                  key={name}
+                  color="text.primary"
+                  sx={{ "&:hover": { color: "#e86537" } }}
+                  disablePadding
+                >
+                  <ListItemButton>
+                    <ListItemIcon> {icon} </ListItemIcon>
+                    <ListItemText primary={name} />
+                  </ListItemButton>
+                </ListItem>
+              </NavLink>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+      <nav
+        style={{
+          width: "100%",
+          "background-color": "#e86537",
+          height: "64px",
+          display: "flex",
+          "flex-direction": "row",
+          "align-items": "center",
+          "justify-content": "space-between",
+        }}
       >
-        Hotel Management System
-      </Typography>
-      <Typography
-        component={Button}
-        variant="button"
-        sx={{ color: "#F5F5F5" }}
-        onClick={handleLogin}
-        paddingRight={4}
-      >
-        Login
-      </Typography>
-    </nav>
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{ marginLeft: winWidth < 500 ? 2 : 8 }}
+        >
+          <IconButton onClick={toggleDrawer}>
+            <Menu sx={{ color: "#fff" }} />
+          </IconButton>
+          <Typography
+            variant="h5"
+            color={"#fff"}
+            onClick={handleToHome}
+            marginLeft={winWidth < 500 ? 2 : 8}
+            sx={{ cursor: "pointer", paddingX: "0.2rem" }}
+          >
+            {winWidth < 500 ? "HMS" : "Hotel Management System"}
+          </Typography>
+        </Box>
+        <Typography
+          component={Button}
+          variant="button"
+          sx={{ color: "#fff" }}
+          onClick={handleLogin}
+          paddingRight={4}
+        >
+          Login
+        </Typography>
+      </nav>
+    </Box>
   );
 }
 
