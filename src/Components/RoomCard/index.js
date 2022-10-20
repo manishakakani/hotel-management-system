@@ -1,4 +1,6 @@
+import { Close, Done } from "@mui/icons-material";
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -41,12 +43,37 @@ function RoomCard() {
 
   return (
     <Card sx={{ maxWidth: 345, cursor: "pointer" }} onClick={handleCardClick}>
-      <CardHeader title="Room No. 201" subheader="Deluxe Room" />
+      <CardHeader title="Deluxe Room" subheader="$9.99/day" />
       <CardMedia component="img" height="194" image={imageToShow} alt="room" />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          Cost Per Day: $9.99
-        </Typography>
+        <Box display="flex" flexDirection="column">
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+            alignItems="center"
+            paddingX={4}
+          >
+            <Typography variant="title" color="green" display="flex">
+              <Done />
+            </Typography>
+            <Typography variant="title" paddingRight={2}>
+              Smoking
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+            alignItems="center"
+            paddingX={4}
+          >
+            <Typography variant="title" color="red" display="flex">
+              <Close />
+            </Typography>
+            <Typography variant="title" paddingRight={2}>
+              Pets Allowed
+            </Typography>
+          </Box>
+        </Box>
       </CardContent>
     </Card>
   );

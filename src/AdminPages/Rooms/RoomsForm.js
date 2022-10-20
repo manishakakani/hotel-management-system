@@ -37,14 +37,6 @@ const MenuProps = {
   },
 };
 
-const amenities = [
-  "WiFi",
-  "Breakfast",
-  "Swimming Pool",
-  "Indoor games",
-  "Basket ball",
-];
-
 function RoomsForm({ isNew = true, details = {}, close }) {
   const winWidth = useContext(WindowsWidthContext);
   const { register, handleSubmit, formState, reset, control } = useForm();
@@ -244,54 +236,6 @@ function RoomsForm({ isNew = true, details = {}, close }) {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl
-              fullWidth
-              variant="standard"
-              sx={{ marginY: "0.8rem" }}
-            >
-              <InputLabel variant="standard" htmlFor="FreeAmenities">
-                Free Amenities
-              </InputLabel>
-              <Controller
-                control={control}
-                name="FreeAmenities"
-                render={({ field: { onChange } }) => (
-                  <Select
-                    labelId="FreeAmenities"
-                    id="FreeAmenities"
-                    multiple
-                    defaultValue={!isNew ? details.FreeAmenities : []}
-                    onChange={(event, data) => onChange(data)}
-                    input={
-                      <Input id="select-multiple-chip" label="FreeAmenities" />
-                    }
-                    renderValue={(selected) => (
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem disabled value="">
-                      <em>Add Free Amenities</em>
-                    </MenuItem>
-                    {amenities.map((amenity) => (
-                      <MenuItem key={amenity} value={amenity}>
-                        {amenity}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-              {errors.FreeAmenities && (
-                <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
-                  {errors.FreeAmenities.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-
             <FormControl
               variant="standard"
               fullWidth

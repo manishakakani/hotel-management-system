@@ -1,9 +1,7 @@
 import { Route } from "react-router-dom";
-import Amenities from "../../AdminPages/Amenities";
 import Hotel from "../../AdminPages/Hotel";
 import Rooms from "../../AdminPages/Rooms";
 import Staff from "../../AdminPages/Staff";
-import AdditionalAmenities from "../../Pages/AdditionalAmenities";
 import AllRoomsPage from "../../Pages/AllRoomsPage";
 import BookingHistory from "../../Pages/BookingHistory";
 import ConfirmToBook from "../../Pages/ConfirmToBook";
@@ -16,21 +14,17 @@ const AllRoutes = [
   <Route path="/" exact element={<WelcomePage />} />,
 
   // Customer Routes
+
+  // allrooms => room => confirm => history
   <Route path="/login" exact element={<LoginPage />} />,
   <Route path="/signup" exact element={<SignUpPage />} />,
   <Route path="/rooms" exact element={<AllRoomsPage />} />,
-  <Route path="/room/:number" exact element={<RoomDetails />} />,
-  <Route
-    path="/room/:number/additional_amenities"
-    exact
-    element={<AdditionalAmenities />}
-  />,
-  <Route path="/room/:number/confirm" exact element={<ConfirmToBook />} />,
+  <Route path="/room/:type" exact element={<RoomDetails />} />,
+  <Route path="/room/:type/confirm" exact element={<ConfirmToBook />} />,
   <Route path="/history" exact element={<BookingHistory />} />,
 
   // Admin Routes
 
-  <Route path="/admin/amenities" exact element={<Amenities />} />,
   <Route path="/admin/hotel" exact element={<Hotel />} />,
   <Route path="/admin/rooms" exact element={<Rooms />} />,
   <Route path="/admin/staff" exact element={<Staff />} />,

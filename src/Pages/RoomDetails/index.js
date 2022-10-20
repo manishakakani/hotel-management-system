@@ -14,10 +14,14 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import RoomToBookContext from "../../Contexts/RoomToBookContext";
 import CheckAvailability from "../CheckAvailability";
 
 function RoomDetails() {
+  const navigate = useNavigate();
+  const [roomBookContext, setRoomToBookContext] = useContext(RoomToBookContext);
   const [indexSelected, setIndexSelected] = useState(-1);
   const imageList = [
     "http://cdn.home-designing.com/wp-content/uploads/2015/03/chevron-wallpaper.jpg",
@@ -48,6 +52,23 @@ function RoomDetails() {
   };
 
   const handleRightClick = () => changeImage();
+
+  const handleBookRoom = () => {
+    const roomDetails = {
+      roomNumber: "201",
+      roomType: "Deluxe",
+      costPerDay: "9.99",
+      additionalCharges: "0",
+      subCost: "9.99",
+      TotalCost: "9.99",
+    };
+    setRoomToBookContext(roomDetails);
+  };
+
+  useEffect(() => {
+    if (roomBookContext && Object.keys(roomBookContext).length)
+      navigate("./confirm", { relative: "path" });
+  }, [roomBookContext]);
 
   useEffect(() => {
     if (imageList.length > 0) {
@@ -102,13 +123,6 @@ function RoomDetails() {
         <Box display="flex" justifyContent="flex-start">
           <Typography variant="h6" color="primary" paddingRight={2}>
             {" "}
-            Room No. :{" "}
-          </Typography>
-          <Typography variant="h6"> 201 </Typography>
-        </Box>
-        <Box display="flex" justifyContent="flex-start">
-          <Typography variant="h6" color="primary" paddingRight={2}>
-            {" "}
             Room Type :{" "}
           </Typography>
           <Typography variant="h6"> Deluxe </Typography>
@@ -135,15 +149,6 @@ function RoomDetails() {
         marginY={4}
         flexWrap="wrap"
       >
-        <Box display="flex" flexDirection="column" alignItems="flex-start">
-          <Typography variant="h6" color="primary" paddingRight={2}>
-            {" "}
-            Amenities :{" "}
-          </Typography>
-          <Typography variant="subtitle"> Free WiFi </Typography>
-          <Typography variant="subtitle"> Complementary Breakfast </Typography>
-          <Typography variant="subtitle"> Swimming Pool </Typography>
-        </Box>
         <Box display="flex" flexDirection="column">
           <Box
             display="flex"
@@ -173,7 +178,10 @@ function RoomDetails() {
           </Box>
         </Box>
       </Box>
-      {bookRoom ? null : (
+      {/* <Button color="primary" variant="contained" onClick={handleBookRoom}>
+        Proceed To Book
+      </Button> */}
+      {/* {bookRoom ? null : (
         <Button
           variant="contained"
           color="primary"
@@ -182,23 +190,16 @@ function RoomDetails() {
         >
           Check availability for booking{" "}
         </Button>
-      )}
-      {bookRoom ? (
-        <section id="availability">
-          <CheckAvailability
-            roomDetails={{
-              roomNumber: "201",
-              roomType: "Deluxe",
-              amenities: [
-                "Free Wifi",
-                "Complementary Breakfast",
-                "Swimming Pool",
-              ],
-              costPerDay: "9.99",
-            }}
-          />
-        </section>
-      ) : null}
+      )} */}
+      <section id="availability">
+        <CheckAvailability
+          roomDetails={{
+            roomNumber: "201",
+            roomType: "Deluxe",
+            costPerDay: "9.99",
+          }}
+        />
+      </section>
     </Box>
   );
 }

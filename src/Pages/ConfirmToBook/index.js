@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
@@ -13,7 +13,14 @@ function ConfirmToBook() {
   useEffect(() => {
     if (!roomBookContext) navigate("/rooms");
     else {
-      setArrivalDate(roomBookContext.arrivalDate.toString());
+      let arrdate = new Date(roomBookContext.arrivalDate);
+      const datestring =
+        arrdate.getDate() +
+        "-" +
+        (arrdate.getMonth() + 1) +
+        "-" +
+        arrdate.getFullYear();
+      setArrivalDate(datestring);
     }
   }, []);
 
@@ -30,103 +37,99 @@ function ConfirmToBook() {
           flexDirection="column"
           alignItems="flex-start"
         >
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Room No. :
-            </Typography>
-            <Typography variant="h6"> {roomBookContext.roomNumber} </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Room Type :
-            </Typography>
-            <Typography variant="h6"> {roomBookContext.roomType} </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Cost Per Day :
-            </Typography>
-            <Typography variant="h6"> {roomBookContext.costPerDay} </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Arrival Date :
-            </Typography>
-            <Typography variant="h6"> {arrivalDate} </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Duration :
-            </Typography>
-            <Typography variant="h6">
-              {" "}
-              {roomBookContext.duration} Days{" "}
-            </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between" flexWrap="wrap">
-            <Typography variant="h6" color="primary">
-              Amenities :
-            </Typography>
-            <Box
-              paddingLeft={4}
-              display="flex"
-              justifyContext="space-around"
-              alignItems="center"
-              flexWrap="wrap"
-            >
-              {" "}
-              {roomBookContext.amenities && roomBookContext.amenities.length
-                ? roomBookContext.amenities.map((am) => {
-                    return (
-                      <Typography variant="subtitle2">{am},&nbsp;</Typography>
-                    );
-                  })
-                : "No Free Amenities"}
-            </Box>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between" flexWrap="wrap">
-            <Typography variant="h6" color="primary">
-              Additional Amenities :
-            </Typography>
-            <Box
-              paddingLeft={4}
-              display="flex"
-              justifyContext="space-around"
-              alignItems="center"
-              flexWrap="wrap"
-            >
-              {" "}
-              {roomBookContext.additionalAmenities &&
-              roomBookContext.additionalAmenities.length
-                ? roomBookContext.additionalAmenities.map((am) => {
-                    return (
-                      <Typography variant="subtitle2">{am},&nbsp;</Typography>
-                    );
-                  })
-                : "No Added Amenities"}
-            </Box>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Sub Total :
-            </Typography>
-            <Typography variant="h6"> {roomBookContext.subCost} </Typography>
-          </Box>
-          <Divider />
-          <Box display="flex" justifyContext="space-between">
-            <Typography variant="h6" color="primary">
-              Grand Total :
-            </Typography>
-            <Typography variant="h6"> {roomBookContext.TotalCost} </Typography>
-          </Box>
-          <Divider />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Room Type :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6"> {roomBookContext.roomType} </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Cost Per Day :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">
+                {" "}
+                {roomBookContext.costPerDay}{" "}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Arrival Date :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6"> {arrivalDate} </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Duration :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">
+                {roomBookContext.duration} Days
+              </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Additional Charges :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">
+                {" "}
+                $
+                {roomBookContext.additionalCharges
+                  ? roomBookContext.additionalCharges
+                  : 0}{" "}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Sub Total :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">
+                $
+                {roomBookContext.subCost
+                  ? roomBookContext.subCost
+                  : roomBookContext.TotalCost}{" "}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
+                Grand Total :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">${roomBookContext.TotalCost}</Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
         </Box>
       ) : null}
       <Button marginY={4} variant="contained">

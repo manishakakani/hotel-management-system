@@ -62,43 +62,11 @@ function BookingDetails({ closeDialog }) {
         </Typography>
         <Typography variant="h6"> 2 Days </Typography>
       </Box>
-      <Box display="flex" justifyContext="space-between" flexWrap="wrap">
+      <Box display="flex" justifyContext="space-between">
         <Typography variant="h6" color="primary">
-          Amenities :
+          Additional Charges :
         </Typography>
-        <Box
-          paddingLeft={4}
-          display="flex"
-          justifyContext="space-around"
-          alignItems="center"
-          flexWrap="wrap"
-        >
-          {" "}
-          {amenities && amenities.length
-            ? amenities.map((am) => {
-                return <Typography variant="subtitle2">{am},&nbsp;</Typography>;
-              })
-            : "No Free Amenities"}
-        </Box>
-      </Box>
-      <Box display="flex" justifyContext="space-between" flexWrap="wrap">
-        <Typography variant="h6" color="primary">
-          Additional Amenities :
-        </Typography>
-        <Box
-          paddingLeft={4}
-          display="flex"
-          justifyContext="space-around"
-          alignItems="center"
-          flexWrap="wrap"
-        >
-          {" "}
-          {amenities && amenities.length
-            ? amenities.map((am) => {
-                return <Typography variant="subtitle2">{am},&nbsp;</Typography>;
-              })
-            : "No Added Amenities"}
-        </Box>
+        <Typography variant="h6"> $8.89 </Typography>
       </Box>
       <Divider />
       <Box display="flex" justifyContext="space-between">

@@ -102,14 +102,6 @@ function Rooms() {
                     <Typography variant="body2" color="text.secondary">
                       Pets - Not Allowed
                     </Typography>
-                    <Typography variant="h6" color="primary">
-                      Amenities:
-                    </Typography>
-                    {["WiFi", "Breakfast", "Swimming Pool"].map((val, idx) => (
-                      <Typography variant="subtitle2">
-                        {idx + 1}. {val}
-                      </Typography>
-                    ))}
                   </CardContent>
                   <CardActions>
                     <Button size="small">Edit</Button>

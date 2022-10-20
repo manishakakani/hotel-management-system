@@ -14,15 +14,18 @@ function CheckAvailability({ roomDetails }) {
 
   const handleBookRoom = () => {
     let roomDetailsTemp = roomDetails;
+    const total = parseFloat(roomDetails["costPerDay"]) * stayDuration;
     roomDetailsTemp["arrivalDate"] = arrivalDate;
     roomDetailsTemp["duration"] = stayDuration;
-    roomDetailsTemp["TotalCost"] =
-      parseFloat(roomDetails["costPerDay"]) * stayDuration;
+    roomDetailsTemp["additionalCharges"] = "0";
+    roomDetailsTemp["subCost"] = total;
+    roomDetailsTemp["TotalCost"] = total;
     setRoomToBookContext(roomDetailsTemp);
   };
 
   useEffect(() => {
-    if (roomBookContext) navigate("additional_amenities");
+    if (roomBookContext && Object.keys(roomBookContext).length)
+      navigate("./confirm", { relative: "path" });
   }, [roomBookContext]);
 
   return (
@@ -56,21 +59,10 @@ function CheckAvailability({ roomDetails }) {
           defaultValue={stayDuration}
           onChange={(newVal) => setStayDuration(newVal)}
         />
-        {!isAvailable ? (
-          <Button onClick={() => setIsAvaialble(true)}>
-            Check Availability
-          </Button>
-        ) : null}
         <Box width="100%" display="flex" justifyContent="center" marginY={6}>
-          {isAvailable ? (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleBookRoom}
-            >
-              Proceed To Book
-            </Button>
-          ) : null}
+          <Button color="primary" variant="contained" onClick={handleBookRoom}>
+            Proceed To Book
+          </Button>
         </Box>
       </Box>
     </Box>

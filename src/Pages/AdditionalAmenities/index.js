@@ -39,7 +39,6 @@ function AdditionalAmenities() {
     tempRoomBookDetails["arrivalDate"] = arrivalDate;
     console.log({ tempRoomBookDetails });
     setRoomToBookContext(tempRoomBookDetails);
-    navigate("../confirm", { relative: "path" });
   };
 
   useEffect(() => {
