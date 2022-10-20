@@ -186,9 +186,9 @@ function StaffForm({ isNew = true, details = {}, close }) {
               <FormHelperText color="text.secondary">
                 Staff member can change the password after logging in.
               </FormHelperText>
-              {errors.SSN && (
+              {errors.Password && (
                 <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
-                  {errors.SSN.Password}
+                  {errors.Password.message}
                 </FormHelperText>
               )}
             </FormControl>

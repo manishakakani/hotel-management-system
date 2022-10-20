@@ -9,6 +9,7 @@ import LoginPage from "../../Pages/LoginPage";
 import RoomDetails from "../../Pages/RoomDetails";
 import SignUpPage from "../../Pages/SignupPage";
 import WelcomePage from "../../Pages/WelcomePage";
+import ChangePassword from "../../SharedPages/ChangePassword";
 
 const AllRoutes = [
   <Route path="/" exact element={<WelcomePage />} />,
@@ -28,6 +29,10 @@ const AllRoutes = [
   <Route path="/admin/hotel" exact element={<Hotel />} />,
   <Route path="/admin/rooms" exact element={<Rooms />} />,
   <Route path="/admin/staff" exact element={<Staff />} />,
+  <Route path="/admin/changePassword" exact element={<ChangePassword />} />,
+
+  // Staff Routes
+  <Route path="/staff/changePassword" exact element={<ChangePassword />} />,
 ];
 
 export default AllRoutes;
