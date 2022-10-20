@@ -199,25 +199,6 @@ function RoomsForm({ isNew = true, details = {}, close }) {
               ) : null}
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
-              <InputLabel variant="standard" htmlFor="RoomNumber">
-                Room Number *
-              </InputLabel>
-              <Input
-                id="RoomNumber"
-                type="text"
-                defaultValue={!isNew ? details.RoomNumber : null}
-                name="RoomNumber"
-                {...register("RoomNumber", {
-                  required: "Room Number is required",
-                })}
-              />
-              {errors.RoomNumber && (
-                <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
-                  {errors.RoomNumber.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="RoomType">
                 Room Type *
               </InputLabel>
@@ -312,6 +293,24 @@ function RoomsForm({ isNew = true, details = {}, close }) {
                   {errors.Rate.message}
                 </FormHelperText>
               )}
+            </FormControl>
+            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+              <InputLabel variant="standard" htmlFor="RoomNumbers">
+                Room Numbers *
+              </InputLabel>
+              <Input
+                id="RoomNumbers"
+                type="text"
+                defaultValue={!isNew ? details.RoomNumber : null}
+                name="RoomNumbers"
+                {...register("RoomNumbers")}
+              />
+              <FormHelperText
+                sx={{ color: "#text.secondary" }}
+                id="my-helper-text"
+              >
+                Seperate room numbers with a comma (,).
+              </FormHelperText>
             </FormControl>
             <Box
               pt={2}

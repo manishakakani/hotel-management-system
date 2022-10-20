@@ -16,7 +16,12 @@ import RoomsForm from "./RoomsForm";
 function Rooms() {
   const [addNew, setAddNew] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [details, setDetails] = useState({});
+  const [details, setDetails] = useState({
+    RoomType: "Deluxe",
+    Rate: "9.99",
+    isSmokingAllowed: 0,
+    arePetsAllowed: 1,
+  });
 
   const [indexSelected, setIndexSelected] = useState(-1);
   const imageList = [
@@ -25,6 +30,8 @@ function Rooms() {
   ];
   const lengthOfImageList = imageList.length;
   const [imageToShow, setImageToShow] = useState("");
+
+  const handleEditRoom = () => setEdit(true);
 
   useEffect(() => {
     if (imageList.length > 0) {
@@ -85,7 +92,10 @@ function Rooms() {
                 justifyContent="center"
               >
                 <Card sx={{ maxWidth: "300px" }}>
-                  <CardHeader title="Room No. 201" subheader="Deluxe Room" />
+                  <CardHeader
+                    title={details.RoomType + " Room"}
+                    subheader={"$" + details.Rate + "/day"}
+                  />
                   <CardMedia
                     component="img"
                     height="194"
@@ -97,14 +107,20 @@ function Rooms() {
                       Cost Per Day: $9.99
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Smoking - Allowed
+                      Smoking -{" "}
+                      {details.isSmokingAllowed === 1
+                        ? "Allowed"
+                        : "Not Allowed"}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Pets - Not Allowed
+                      Pets -{" "}
+                      {details.arePetsAllowed === 1 ? "Allowed" : "Not Allowed"}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Edit</Button>
+                    <Button size="small" onClick={handleEditRoom}>
+                      Edit
+                    </Button>
                     <Button size="small">Delete</Button>
                   </CardActions>
                 </Card>
