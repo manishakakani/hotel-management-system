@@ -217,7 +217,7 @@ function RoomsForm({ isNew = true, details = {}, close }) {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl
+            {/* <FormControl
               variant="standard"
               fullWidth
               sx={{ marginY: "0.8rem" }}
@@ -245,8 +245,8 @@ function RoomsForm({ isNew = true, details = {}, close }) {
                   {errors.isSmokingAllowed.message}
                 </FormHelperText>
               )}
-            </FormControl>
-
+            </FormControl> */}
+            {/* 
             <FormControl
               variant="standard"
               fullWidth
@@ -275,7 +275,7 @@ function RoomsForm({ isNew = true, details = {}, close }) {
                   {errors.arePetsAllowed.message}
                 </FormHelperText>
               )}
-            </FormControl>
+            </FormControl> */}
 
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="Rate">

@@ -9,6 +9,7 @@ function ConfirmToBook() {
   const navigate = useNavigate();
   const [roomBookContext, setRoomToBookContext] = useContext(RoomToBookContext);
   const [arrivalDate, setArrivalDate] = useState();
+  const [departureDate, setDepartureDate] = useState();
 
   useEffect(() => {
     if (!roomBookContext) navigate("/rooms");
@@ -19,8 +20,18 @@ function ConfirmToBook() {
         "-" +
         (arrdate.getMonth() + 1) +
         "-" +
-        arrdate.getFullYear();
+        arrdate.getFullYear() +
+        " 12:00 PM";
       setArrivalDate(datestring);
+      let depdate = new Date(roomBookContext.departureDate);
+      const datestringdep =
+        depdate.getDate() +
+        "-" +
+        (depdate.getMonth() + 1) +
+        "-" +
+        depdate.getFullYear() +
+        " 11:00 AM";
+      setDepartureDate(datestringdep);
     }
   }, []);
 
@@ -76,12 +87,24 @@ function ConfirmToBook() {
           <Grid container spacing={3}>
             <Grid item xs={6} md={5}>
               <Typography variant="h6" color="primary">
+                Departure Date :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6"> {departureDate} </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
                 Duration :
               </Typography>
             </Grid>
             <Grid item xs={6} lg={6}>
               <Typography variant="h6">
-                {roomBookContext.duration} Days
+                {roomBookContext.duration}{" "}
+                {roomBookContext.duration == 1 ? "Day" : "Days"}
               </Typography>
             </Grid>
           </Grid>
@@ -94,7 +117,8 @@ function ConfirmToBook() {
             </Grid>
             <Grid item xs={6} lg={6}>
               <Typography variant="h6">
-                {roomBookContext.noOfRooms} Rooms
+                {roomBookContext.noOfRooms}{" "}
+                {roomBookContext.noOfRooms == 1 ? "Room" : "Rooms"}
               </Typography>
             </Grid>
           </Grid>

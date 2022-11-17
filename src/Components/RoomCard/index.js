@@ -43,11 +43,11 @@ function RoomCard() {
 
   return (
     <Card sx={{ maxWidth: 345, cursor: "pointer" }} onClick={handleCardClick}>
-      <CardHeader title="Deluxe Room" subheader="$9.99/day" />
+      <CardHeader title="Deluxe Room" subheader="$9.99/night" />
       <CardMedia component="img" height="194" image={imageToShow} alt="room" />
       <CardContent>
         <Box display="flex" flexDirection="column">
-          <Box
+          {/* <Box
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
@@ -59,8 +59,8 @@ function RoomCard() {
             <Typography variant="title" paddingRight={2}>
               Smoking
             </Typography>
-          </Box>
-          <Box
+          </Box> */}
+          {/* <Box
             display="flex"
             justifyContent="flex-start"
             alignItems="center"
@@ -72,7 +72,7 @@ function RoomCard() {
             <Typography variant="title" paddingRight={2}>
               Pets Allowed
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
       </CardContent>
     </Card>

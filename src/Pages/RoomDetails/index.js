@@ -135,14 +135,14 @@ function RoomDetails() {
         flexWrap="wrap"
       >
         <Typography variant="h6" color="primary" paddingRight={2}>
-          Cost/day :
+          Cost/night :
         </Typography>
         <Typography variant="h6">$9.99</Typography>
       </Box>
       <Typography variant="caption">
         (Check-in: 12 PM, Check-out: 11 AM)
       </Typography>
-      <Box
+      {/* <Box
         display="flex"
         width="50%"
         justifyContent="space-around"
@@ -177,7 +177,7 @@ function RoomDetails() {
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
       {/* <Button color="primary" variant="contained" onClick={handleBookRoom}>
         Proceed To Book
       </Button> */}
