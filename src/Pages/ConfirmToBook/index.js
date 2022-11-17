@@ -89,6 +89,19 @@ function ConfirmToBook() {
           <Grid container spacing={3}>
             <Grid item xs={6} md={5}>
               <Typography variant="h6" color="primary">
+                No Of Rooms :
+              </Typography>
+            </Grid>
+            <Grid item xs={6} lg={6}>
+              <Typography variant="h6">
+                {roomBookContext.noOfRooms} Rooms
+              </Typography>
+            </Grid>
+          </Grid>
+          <Divider sx={{ width: "100%" }} />
+          <Grid container spacing={3}>
+            <Grid item xs={6} md={5}>
+              <Typography variant="h6" color="primary">
                 Additional Charges :
               </Typography>
             </Grid>

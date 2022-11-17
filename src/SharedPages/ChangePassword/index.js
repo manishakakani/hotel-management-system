@@ -76,7 +76,7 @@ function ChangePassword() {
               width: "100%",
             }}
           >
-            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+            <FormControl sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="OldPassword">
                 Old Password
               </InputLabel>
@@ -94,7 +94,7 @@ function ChangePassword() {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+            <FormControl sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="NewPassword">
                 New Password
               </InputLabel>
@@ -112,28 +112,28 @@ function ChangePassword() {
                 </FormHelperText>
               )}
             </FormControl>
-            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
-              <InputLabel variant="standard" htmlFor="Password">
-                Confirm Password
+            <FormControl sx={{ marginY: "0.8rem" }}>
+              <InputLabel htmlFor="Password" variant="standard">
+                Confirm Password *
               </InputLabel>
               <Input
+                {...register("Password", {
+                  validate: (value) => watch("NewPassword") === value,
+                })} // custom message
                 id="Password"
                 type="password"
-                name="Password"
-                {...register("Password", {
-                  required: "Required",
-                })}
               />
               {errors.Password && (
                 <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
-                  {errors.Password.message}
+                  {errors.Password && (
+                    <Typography variant="caption" color="error">
+                      Passwords don't match!
+                    </Typography>
+                  )}
                 </FormHelperText>
               )}
             </FormControl>
-            <Box
-              pt={2}
-              sx={{ display: "flex", justifyContent: "space-around" }}
-            >
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
               <Typography
                 variant="button"
                 type="submit"

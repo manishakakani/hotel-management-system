@@ -11,12 +11,18 @@ function CheckAvailability({ roomDetails }) {
   const [arrivalDate, setArrivalDate] = useState(new Date());
   const [stayDuration, setStayDuration] = useState(1);
   const [isAvailable, setIsAvaialble] = useState(false);
+  const [noOfRooms, setNoOfRooms] = useState(1);
+
+  const handleCheckAvailablity = () => {
+    setIsAvaialble(true);
+  };
 
   const handleBookRoom = () => {
     let roomDetailsTemp = roomDetails;
     const total = parseFloat(roomDetails["costPerDay"]) * stayDuration;
     roomDetailsTemp["arrivalDate"] = arrivalDate;
     roomDetailsTemp["duration"] = stayDuration;
+    roomDetailsTemp["noOfRooms"] = noOfRooms;
     roomDetailsTemp["additionalCharges"] = "0";
     roomDetailsTemp["subCost"] = total;
     roomDetailsTemp["TotalCost"] = total;
@@ -59,11 +65,36 @@ function CheckAvailability({ roomDetails }) {
           defaultValue={stayDuration}
           onChange={(newVal) => setStayDuration(newVal)}
         />
-        <Box width="100%" display="flex" justifyContent="center" marginY={6}>
-          <Button color="primary" variant="contained" onClick={handleBookRoom}>
-            Proceed To Book
-          </Button>
-        </Box>
+        <TextField
+          type="number"
+          InputProps={{ inputProps: { min: 1, max: 5 } }}
+          placeholder="No. of rooms"
+          helperText="You can select maximum of 5 rooms"
+          defaultValue={noOfRooms}
+          onChange={(newVal) => setNoOfRooms(newVal)}
+        />
+        {!isAvailable ? (
+          <Typography
+            disabled={!(stayDuration >= 1 || arrivalDate)}
+            component={Button}
+            variant="caption"
+            onClick={handleCheckAvailablity}
+          >
+            {" "}
+            Check Availability{" "}
+          </Typography>
+        ) : null}
+        {isAvailable ? (
+          <Box width="100%" display="flex" justifyContent="center" marginY={6}>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleBookRoom}
+            >
+              Proceed To Book
+            </Button>
+          </Box>
+        ) : null}
       </Box>
     </Box>
   );

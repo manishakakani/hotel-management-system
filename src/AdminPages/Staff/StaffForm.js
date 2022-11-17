@@ -73,7 +73,7 @@ function StaffForm({ isNew = true, details = {}, close }) {
           >
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="Name">
-                Name *
+                Name
               </InputLabel>
               <Input
                 id="Name"
@@ -90,6 +90,67 @@ function StaffForm({ isNew = true, details = {}, close }) {
                 </FormHelperText>
               )}
             </FormControl>
+
+            <FormControl
+              sx={{
+                marginY: "0.6rem",
+                flex: "display",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="title:"
+                textAlign="left"
+                paddingRight={2}
+                color="text.secondary"
+              >
+                Gender
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  style={{ accentColor: "#e56717" }}
+                  {...register("gender", {
+                    required: "Please select the gender",
+                  })}
+                />
+                <Typography paddingX="0.3rem" variant="subtitle2">
+                  Male
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  style={{ accentColor: "#e56717" }}
+                  {...register("gender", {
+                    required: "Please select the gender",
+                  })}
+                />
+                <Typography paddingX="0.3rem" variant="subtitle2">
+                  Female
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value="other"
+                  style={{ accentColor: "#e56717" }}
+                  {...register("gender", {
+                    required: "Please select the gender",
+                  })}
+                />
+                <Typography paddingX="0.3rem" variant="subtitle2">
+                  Other
+                </Typography>
+              </Box>
+            </FormControl>
+
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="Address">
                 Address

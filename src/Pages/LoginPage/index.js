@@ -16,10 +16,8 @@ import {
 } from "@mui/material";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import { useNavigate } from "react-router-dom";
-import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 
 const LoginPage = () => {
-  const winWidth = React.useContext(WindowsWidthContext);
   const navigate = useNavigate();
   const isUserLogged = localStorage.getItem("logged");
   const [openErrorBar, setOpenErrorBar] = useState(false);
@@ -104,13 +102,12 @@ const LoginPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "80vh",
-        justifyContent: "center",
+        marginTop: 4,
         alignItems: "center",
       }}
     >
-      <Typography variant="h2" color="primary">
-        Log In
+      <Typography variant="h3" color="primary">
+        Sign In
       </Typography>
       <form
         onSubmit={validatePassword && onSubmit}
@@ -118,7 +115,6 @@ const LoginPage = () => {
           marginTop: "3em",
           display: "flex",
           flexDirection: "column",
-          width: winWidth < 400 ? "16rem" : "22rem",
         }}
       >
         <FormControl>

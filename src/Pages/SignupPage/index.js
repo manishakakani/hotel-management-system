@@ -94,14 +94,13 @@ function SignUpPage() {
         alignItems: "center",
       }}
     >
-      <Typography variant="h2" color="primary" marginTop={2}>
+      <Typography variant="h3" color="primary" marginTop={2}>
         Sign Up
       </Typography>
       <Grid
         container
         sx={{ justifyContent: "center", alignItems: "center" }}
-        spacing={6}
-        marginTop={2}
+        spacing={2}
       >
         <Grid item>
           <form
@@ -117,7 +116,6 @@ function SignUpPage() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                // alignItems: "center",
                 width: winWidth > 600 ? "25rem" : "75vw",
               }}
             >
@@ -140,14 +138,6 @@ function SignUpPage() {
                   </FormHelperText>
                 )}
               </FormControl>
-              <Typography
-                variant="subtitle1"
-                fontWeight="550"
-                color="primary"
-                textAlign="left"
-              >
-                Gender: *
-              </Typography>
               <FormControl
                 sx={{
                   marginY: "0.6rem",
@@ -156,6 +146,14 @@ function SignUpPage() {
                   justifyContent: "space-between",
                 }}
               >
+                <Typography
+                  variant="title:"
+                  textAlign="left"
+                  paddingRight={2}
+                  color="text.secondary"
+                >
+                  Gender
+                </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <input
                     type="radio"
@@ -166,11 +164,7 @@ function SignUpPage() {
                       required: "Please select the gender",
                     })}
                   />
-                  <Typography
-                    paddingX="0.3rem"
-                    variant="subtitle2"
-                    color="primary"
-                  >
+                  <Typography paddingX="0.3rem" variant="subtitle2">
                     Male
                   </Typography>
                 </Box>
@@ -184,11 +178,7 @@ function SignUpPage() {
                       required: "Please select the gender",
                     })}
                   />
-                  <Typography
-                    paddingX="0.3rem"
-                    variant="subtitle2"
-                    color="primary"
-                  >
+                  <Typography paddingX="0.3rem" variant="subtitle2">
                     Female
                   </Typography>
                 </Box>
@@ -202,11 +192,7 @@ function SignUpPage() {
                       required: "Please select the gender",
                     })}
                   />
-                  <Typography
-                    paddingX="0.3rem"
-                    variant="subtitle2"
-                    color="primary"
-                  >
+                  <Typography paddingX="0.3rem" variant="subtitle2">
                     Other
                   </Typography>
                 </Box>
@@ -279,25 +265,6 @@ function SignUpPage() {
                 )}
               </FormControl>
               <FormControl sx={{ marginY: "0.6rem" }}>
-                <InputLabel htmlFor="ssn" variant="standard">
-                  SSN *
-                </InputLabel>
-                <Input
-                  {...register("SSN", {
-                    required: "Please enter your SSN.",
-                  })} // custom message
-                  variant="standard"
-                  id="ssn"
-                />
-                {errors.ssn && (
-                  <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
-                    <Typography variant="caption" color="error">
-                      {errors.ssn.message}{" "}
-                    </Typography>
-                  </FormHelperText>
-                )}
-              </FormControl>
-              <FormControl sx={{ marginY: "0.6rem" }}>
                 <InputLabel htmlFor="password" variant="standard">
                   Password *
                 </InputLabel>
@@ -346,7 +313,6 @@ function SignUpPage() {
               <FormControl>
                 <Box
                   my={4}
-                  py={4}
                   sx={{ display: "flex", justifyContent: "space-around" }}
                 >
                   <Button
