@@ -25,17 +25,21 @@ function ServiceRequested() {
         return (
           <Grid item xs={12} md={6} lg={4} align="center" key={"sreq" + index}>
             <Card sx={{ maxWidth: 400 }}>
-              <CardHeader title="201" />
-              <CardContent>
-                Service Requested Time: 12-11-2022 11:00 PM
+              <CardContent
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h6">Room No. 201</Typography>
+                <Box>
+                  <Switch
+                    onChange={($event) => handleServiceRequest($event)}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                  Completed
+                </Box>
               </CardContent>
-              <CardActions>
-                <Switch
-                  onChange={($event) => handleServiceRequest($event)}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
-                Completed
-              </CardActions>
             </Card>
           </Grid>
         );
