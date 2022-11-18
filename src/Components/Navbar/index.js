@@ -76,7 +76,7 @@ function Navbar() {
         style={{
           width: "100%",
           backgroundColor: "#F5F5F5",
-          height: "3rem",
+          height: "2rem",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
