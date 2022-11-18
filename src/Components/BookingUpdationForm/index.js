@@ -9,9 +9,17 @@ import {
   FormControl,
   Input,
   InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
+import {
+  DatePicker,
+  DateTimePicker,
+  LocalizationProvider,
+} from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
@@ -30,6 +38,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
   const checkedIcon = <CheckBox fontSize="small" />;
 
   const formSubmitted = (data) => {
+    console.log({ data });
     setOpenBackdrop(true);
     setTimeout(() => {
       setOpenBackdrop(false);
@@ -101,41 +110,34 @@ function BookingUpdationForm({ bookingDetails, close }) {
               />
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
-              <InputLabel variant="standard" htmlFor="StartDate">
-                Arrival Date
-              </InputLabel>
-              <Input
-                id="StartDate"
-                type="text"
-                value={bookingDetails.StartDate}
-                readonly
-                name="StartDate"
-                {...register("StartDate")}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Arrival Date"
+                  value={bookingDetails?.StartDate}
+                  renderInput={(params) => <TextField {...params} />}
+                  {...register("StartDate")}
+                />
+              </LocalizationProvider>
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
-              <InputLabel variant="standard" htmlFor="CheckInTime">
-                Check-in Time
-              </InputLabel>
-              <Input
-                id="CheckInTime"
-                type="text"
-                defaultValue={bookingDetails?.CheckInTime}
-                name="CheckInTime"
-                {...register("CheckInTime")}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Check-in Time"
+                  value={bookingDetails?.CheckInTime}
+                  renderInput={(params) => <TextField {...params} />}
+                  {...register("CheckInTime")}
+                />
+              </LocalizationProvider>
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
-              <InputLabel variant="standard" htmlFor="CheckOutTime">
-                Check-out Time
-              </InputLabel>
-              <Input
-                id="CheckOutTime"
-                type="text"
-                defaultValue={bookingDetails?.CheckOutTime}
-                name="CheckOutTime"
-                {...register("CheckOutTime")}
-              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Check-out Time"
+                  value={bookingDetails?.CheckOutTime}
+                  renderInput={(params) => <TextField {...params} />}
+                  {...register("CheckOutTime")}
+                />
+              </LocalizationProvider>
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="NumberOfRooms">
@@ -227,6 +229,45 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 {...register("TotalAmount")}
               />
             </FormControl>
+            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+              <InputLabel variant="standard" htmlFor="AmountPaid">
+                Amount Paid
+              </InputLabel>
+              <Input
+                id="AmountPaid"
+                readonly
+                type="text"
+                defaultValue={bookingDetails?.AmountPaid}
+                name="AmountPaid"
+                {...register("AmountPaid")}
+              />
+            </FormControl>
+            <FormControl
+              fullWidth
+              variant="standard"
+              sx={{ marginY: "0.8rem" }}
+            >
+              <InputLabel id="PaymentStatus">Payment Status</InputLabel>
+              <Controller
+                control={control}
+                name="RoomIDs"
+                render={({ field: { onChange } }) => (
+                  <Select
+                    fullWidth
+                    labelId="PaymentStatus"
+                    id="PaymentStatus"
+                    defaultValue={bookingDetails?.PaymentStatus}
+                    onChange={onChange}
+                    label="PaymentStatus"
+                  >
+                    <MenuItem value={"Unpaid"}>Unpaid</MenuItem>
+                    <MenuItem value={"Paid Partially"}>Paid Partially</MenuItem>
+                    <MenuItem value={"Completed"}>Completed</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
+
             <Box
               pt={2}
               sx={{ display: "flex", justifyContent: "space-around" }}
