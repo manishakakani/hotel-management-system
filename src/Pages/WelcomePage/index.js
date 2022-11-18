@@ -13,12 +13,12 @@ function WelcomePage() {
         justifyContent: "center",
         alignItems: "center",
         alignContent: "center",
-        height: "90vh",
+        height: "85vh",
       }}
     >
       <img
         style={{
-          maxHeight: "90%",
+          maxHeight: "85%",
           minWidth: "70%",
           maxWidth: "90%",
         }}

@@ -1,4 +1,4 @@
-import { Menu } from "@mui/icons-material";
+import { LocationOn, Menu } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -44,7 +44,10 @@ function Navbar() {
           >
             <img height="250px" width="250px" src={resortImage} />
           </Box>
-          <List sx={{ marginTop: 6 }}>
+          <Typography mt={2} variant="h6" color="primary" textAlign="center">
+            Admin
+          </Typography>
+          <List sx={{ marginTop: 2 }}>
             {adminNavItems.map(({ icon, name, route }, index) => (
               <NavLink
                 to={route}
@@ -72,12 +75,39 @@ function Navbar() {
       <nav
         style={{
           width: "100%",
-          "background-color": "#e86537",
-          height: "64px",
+          backgroundColor: "#F5F5F5",
+          height: "3rem",
           display: "flex",
-          "flex-direction": "row",
-          "align-items": "center",
-          "justify-content": "space-between",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{ marginLeft: winWidth < 500 ? 2 : 8 }}
+        >
+          <LocationOn sx={{ color: "#000" }} />
+          <Typography variant="body1" color="black">
+            Missouri
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center" paddingRight={4}>
+          <Typography variant="body1" color="black">
+            PH: +1 314-376-5389
+          </Typography>
+        </Box>
+      </nav>
+      <nav
+        style={{
+          width: "100%",
+          backgroundColor: "#e86537",
+          height: "5rem",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <Box

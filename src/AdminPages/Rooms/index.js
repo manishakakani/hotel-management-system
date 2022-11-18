@@ -19,8 +19,7 @@ function Rooms() {
   const [details, setDetails] = useState({
     RoomType: "Deluxe",
     Rate: "9.99",
-    isSmokingAllowed: 0,
-    arePetsAllowed: 1,
+    RoomNumbers: [201, 202],
   });
 
   const [indexSelected, setIndexSelected] = useState(-1);
@@ -77,6 +76,7 @@ function Rooms() {
         <RoomsForm
           isNew={addNew ? true : false}
           details={details}
+          images={imageList}
           close={handleCloseForm}
         />
       ) : (
@@ -92,10 +92,7 @@ function Rooms() {
                 justifyContent="center"
               >
                 <Card sx={{ maxWidth: "300px" }}>
-                  <CardHeader
-                    title={details.RoomType + " Room"}
-                    subheader={"$" + details.Rate + "/day"}
-                  />
+                  <CardHeader title={details.RoomType + " Room"} />
                   <CardMedia
                     component="img"
                     height="194"
@@ -104,9 +101,9 @@ function Rooms() {
                   />
                   <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                      Cost Per Day: $9.99
+                      Cost/Night: $9.99
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    {/* <Typography variant="body2" color="text.secondary">
                       Smoking -{" "}
                       {details.isSmokingAllowed === 1
                         ? "Allowed"
@@ -115,6 +112,13 @@ function Rooms() {
                     <Typography variant="body2" color="text.secondary">
                       Pets -{" "}
                       {details.arePetsAllowed === 1 ? "Allowed" : "Not Allowed"}
+                    </Typography> */}
+                    <Typography variant="body2" color="text.secondary">
+                      Rooms -{" "}
+                      {details.RoomNumbers.map((rm, idx) => {
+                        if (idx == details.RoomNumbers.length - 1) return rm;
+                        return rm + ", ";
+                      })}
                     </Typography>
                   </CardContent>
                   <CardActions>

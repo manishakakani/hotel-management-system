@@ -37,7 +37,7 @@ const MenuProps = {
   },
 };
 
-function RoomsForm({ isNew = true, details = {}, close }) {
+function RoomsForm({ isNew = true, details = {}, images, close }) {
   const winWidth = useContext(WindowsWidthContext);
   const { register, handleSubmit, formState, reset, control } = useForm();
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
@@ -46,8 +46,6 @@ function RoomsForm({ isNew = true, details = {}, close }) {
   const [imageList, setImageList] = useState([]);
 
   const { errors } = formState;
-
-  useEffect(() => {}, []);
 
   const formSubmitted = (data) => {
     data["Images"] = imageList;
