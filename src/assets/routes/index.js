@@ -12,6 +12,7 @@ import WelcomePage from "../../Pages/WelcomePage";
 import ChangePassword from "../../SharedPages/ChangePassword";
 import ListBookings from "../../SharedPages/ListBookings";
 import Profile from "../../SharedPages/Profile";
+import ServiceRequested from "../../StaffPages/ServiceRequested";
 
 const AllRoutes = [
   <Route path="/" exact element={<WelcomePage />} />,
@@ -26,6 +27,7 @@ const AllRoutes = [
   <Route path="/room/:type/confirm" exact element={<ConfirmToBook />} />,
   <Route path="/history" exact element={<BookingHistory />} />,
   <Route path="/profile" exact element={<Profile />} />,
+  <Route path="/changePassword" exact element={<ChangePassword />} />,
 
   // Admin Routes
 
@@ -40,6 +42,7 @@ const AllRoutes = [
   <Route path="/staff/changePassword" exact element={<ChangePassword />} />,
   <Route path="/staff/bookings" exact element={<ListBookings />} />,
   <Route path="/staff/profile" exact element={<Profile />} />,
+  <Route path="/staff/serviceRequested" exact element={<ServiceRequested />} />,
 ];
 
 export default AllRoutes;
