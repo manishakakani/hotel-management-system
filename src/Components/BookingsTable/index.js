@@ -23,6 +23,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { Edit, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import BookingUpdationForm from "../BookingUpdationForm";
 
 function createData(name, calories, fat, carbs, protein) {
   return {
@@ -241,11 +242,13 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-function ExpandableTableRow({ row, index, isSelected, handleClick }) {
+function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
   const isItemSelected = isSelected(row.name);
   const labelId = `enhanced-table-checkbox-${index}`;
   const [open, setOpen] = React.useState(false);
   const handleExpandClick = () => setOpen(!open);
+
+  const handleUpdate = () => openForm({ BookingID: "TR5678", Name: "hsdkjhk" });
 
   return (
     <>
@@ -371,7 +374,7 @@ function ExpandableTableRow({ row, index, isSelected, handleClick }) {
             </TableCell>
             <TableCell>
               <Tooltip title="Update">
-                <IconButton>
+                <IconButton onClick={handleUpdate}>
                   <Edit />
                 </IconButton>
               </Tooltip>
@@ -390,6 +393,8 @@ export default function BookingsTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [openUpdationForm, setOpenUpdationForm] = React.useState(false);
+  const [detailsToUpdate, setDetailsToUpdate] = React.useState(null);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -404,6 +409,15 @@ export default function BookingsTable() {
       return;
     }
     setSelected([]);
+  };
+
+  const handleOpenUpdationForm = (details) => {
+    setDetailsToUpdate(details);
+    setOpenUpdationForm(true);
+  };
+  const handleCloseUpdationForm = () => {
+    setOpenUpdationForm(false);
+    setDetailsToUpdate(null);
   };
 
   const handleClick = (event, name) => {
@@ -456,59 +470,67 @@ export default function BookingsTable() {
         my: 2,
       }}
     >
-      <Paper sx={{ width: "90%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                 rows.sort(getComparator(order, orderBy)).slice() */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <ExpandableTableRow
-                      row={row}
-                      index={index}
-                      isSelected={isSelected}
-                      handleClick={handleClick}
-                    />
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+      {openUpdationForm ? (
+        <BookingUpdationForm
+          bookingDetails={detailsToUpdate}
+          close={handleCloseUpdationForm}
         />
-      </Paper>
+      ) : (
+        <Paper sx={{ width: "90%", mb: 2 }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+                 rows.sort(getComparator(order, orderBy)).slice() */}
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <ExpandableTableRow
+                        row={row}
+                        index={index}
+                        isSelected={isSelected}
+                        handleClick={handleClick}
+                        openForm={handleOpenUpdationForm}
+                      />
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      )}
       {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"

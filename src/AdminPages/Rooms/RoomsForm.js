@@ -26,17 +26,6 @@ import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
 function RoomsForm({ isNew = true, details = {}, images, close }) {
   const winWidth = useContext(WindowsWidthContext);
   const { register, handleSubmit, formState, reset, control } = useForm();
