@@ -13,13 +13,14 @@ import {
 import { useForm } from "react-hook-form";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
+import { useNavigate } from "react-router-dom";
 
 function ChangePassword() {
   const { register, handleSubmit, formState, reset, watch } = useForm();
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
   const [openErrorBar, setOpenErrorBar] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
-
+  const navigate = useNavigate();
   const { errors } = formState;
 
   const formSubmitted = (data) => {
@@ -39,6 +40,8 @@ function ChangePassword() {
     setOpenBackdrop(false);
     setOpenErrorBar(false);
   };
+
+  const handleCancel = () => navigate(-1);
 
   return (
     <Box
@@ -134,6 +137,15 @@ function ChangePassword() {
               )}
             </FormControl>
             <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <Typography
+                variant="button"
+                type="cancel"
+                m={2}
+                component={Button}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Typography>
               <Typography
                 variant="button"
                 type="submit"
