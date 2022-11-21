@@ -11,20 +11,42 @@ import {
   IconButton,
   ListItemIcon,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import adminNavItems from "../AdminNav/adminNavItems";
 import resortImage from "../../assets/images/resort.jpg";
+import UserContext from "../../Contexts/UserContext";
+import staffNavItems from "../StaffNav";
+import customerNavItems from "../CustomerNav";
 
 function Navbar() {
   const winWidth = useContext(WindowsWidthContext);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [userContext, setUserContext] = useContext(UserContext);
+  const [role, setRole] = useState("");
+  const [navLinksToShow, setNavLinksToShow] = useState([]);
+
+  useEffect(() => {
+    if (userContext?.Role) setRole(userContext.Role);
+  }, [userContext]);
+
+  useEffect(() => {
+    if (role == "Admin") setNavLinksToShow(adminNavItems);
+    else if (role == "Staff") setNavLinksToShow(staffNavItems);
+    else if (role == "Customer") setNavLinksToShow(customerNavItems);
+  }, [role]);
+
   const navigate = useNavigate();
   const handleToHome = () => navigate("/");
   const handleLogin = () => navigate("/login");
-  const [openDrawer, setOpenDrawer] = useState(false);
+
   const toggleDrawer = () => setOpenDrawer((prevVal) => !prevVal);
-  const handleLogout = () => navigate("/");
+  const handleLogout = () => {
+    setUserContext(null);
+    localStorage.removeItem("userinfo");
+    navigate("/");
+  };
 
   return (
     <Box>
@@ -45,34 +67,36 @@ function Navbar() {
             <img height="250px" width="250px" src={resortImage} />
           </Box>
           <Typography mt={2} variant="h6" color="primary" textAlign="center">
-            Admin
+            {role}
           </Typography>
           <List sx={{ marginTop: 2 }}>
-            {adminNavItems.map(({ icon, name, route }, index) => (
-              <NavLink
-                to={route}
-                style={({ isActive }) => ({
-                  color: isActive ? "#e86537" : "#000",
-                  textDecoration: "none",
-                })}
-              >
-                <ListItem
-                  key={name}
-                  color="text.primary"
-                  sx={{ "&:hover": { color: "#e86537" } }}
-                  disablePadding
-                >
-                  <ListItemButton>
-                    <ListItemIcon> {icon} </ListItemIcon>
-                    <ListItemText primary={name} />
-                  </ListItemButton>
-                </ListItem>
-              </NavLink>
-            ))}
+            {navLinksToShow.length > 0
+              ? navLinksToShow.map(({ icon, name, route }, index) => (
+                  <NavLink
+                    to={route}
+                    style={({ isActive }) => ({
+                      color: isActive ? "#e86537" : "#000",
+                      textDecoration: "none",
+                    })}
+                  >
+                    <ListItem
+                      key={name}
+                      color="text.primary"
+                      sx={{ "&:hover": { color: "#e86537" } }}
+                      disablePadding
+                    >
+                      <ListItemButton>
+                        <ListItemIcon> {icon} </ListItemIcon>
+                        <ListItemText primary={name} />
+                      </ListItemButton>
+                    </ListItem>
+                  </NavLink>
+                ))
+              : null}
           </List>
         </Box>
       </Drawer>
-      <nav
+      {/* <nav
         style={{
           width: "100%",
           backgroundColor: "#F5F5F5",
@@ -98,12 +122,12 @@ function Navbar() {
             PH: +1 314-376-5389
           </Typography>
         </Box>
-      </nav>
+      </nav> */}
       <nav
         style={{
           width: "100%",
           backgroundColor: "#e86537",
-          height: "5rem",
+          height: "5.5rem",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -115,9 +139,11 @@ function Navbar() {
           alignItems="center"
           sx={{ marginLeft: winWidth < 500 ? 2 : 8 }}
         >
-          <IconButton onClick={toggleDrawer}>
-            <Menu sx={{ color: "#fff" }} />
-          </IconButton>
+          {userContext?.id ? (
+            <IconButton onClick={toggleDrawer}>
+              <Menu sx={{ color: "#fff" }} />
+            </IconButton>
+          ) : null}
           <Typography
             variant="h5"
             color={"#fff"}
@@ -128,15 +154,27 @@ function Navbar() {
             {winWidth < 500 ? "HMS" : "Hotel Management System"}
           </Typography>
         </Box>
-        <Typography
-          component={Button}
-          variant="button"
-          sx={{ color: "#fff" }}
-          onClick={handleLogin}
-          paddingRight={4}
-        >
-          Login
-        </Typography>
+        {userContext?.id ? (
+          <Typography
+            component={Button}
+            variant="button"
+            sx={{ color: "#fff" }}
+            onClick={handleLogout}
+            paddingRight={4}
+          >
+            Logout
+          </Typography>
+        ) : (
+          <Typography
+            component={Button}
+            variant="button"
+            sx={{ color: "#fff" }}
+            onClick={handleLogin}
+            paddingRight={4}
+          >
+            Login
+          </Typography>
+        )}
       </nav>
     </Box>
   );

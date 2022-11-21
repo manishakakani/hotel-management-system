@@ -14,35 +14,33 @@ import ListBookings from "../../SharedPages/ListBookings";
 import Profile from "../../SharedPages/Profile";
 import ServiceRequested from "../../StaffPages/ServiceRequested";
 
-const AllRoutes = [
+export const InitialRoutes = [
   <Route path="/" exact element={<WelcomePage />} />,
-
-  // Customer Routes
-
-  // allrooms => room => confirm => history
   <Route path="/login" exact element={<LoginPage />} />,
   <Route path="/signup" exact element={<SignUpPage />} />,
+];
+
+export const CustomerRoutes = [
   <Route path="/rooms" exact element={<AllRoomsPage />} />,
   <Route path="/room/:type" exact element={<RoomDetails />} />,
   <Route path="/room/:type/confirm" exact element={<ConfirmToBook />} />,
   <Route path="/history" exact element={<BookingHistory />} />,
   <Route path="/profile" exact element={<Profile />} />,
-  <Route path="/changePassword" exact element={<ChangePassword />} />,
+  // <Route path="/changePassword" exact element={<ChangePassword />} />,
+];
 
-  // Admin Routes
-
-  <Route path="/admin/hotel" exact element={<Hotel />} />,
+export const AdminRoutes = [
+  // <Route path="/admin/hotel" exact element={<Hotel />} />,
   <Route path="/admin/rooms" exact element={<Rooms />} />,
   <Route path="/admin/staff" exact element={<Staff />} />,
-  <Route path="/admin/changePassword" exact element={<ChangePassword />} />,
+  // <Route path="/admin/changePassword" exact element={<ChangePassword />} />,
   <Route path="/admin/bookings" exact element={<ListBookings />} />,
   <Route path="/admin/profile" exact element={<Profile />} />,
+];
 
-  // Staff Routes
-  <Route path="/staff/changePassword" exact element={<ChangePassword />} />,
+export const StaffRoutes = [
+  // <Route path="/staff/changePassword" exact element={<ChangePassword />} />,
   <Route path="/staff/bookings" exact element={<ListBookings />} />,
   <Route path="/staff/profile" exact element={<Profile />} />,
   <Route path="/staff/serviceRequested" exact element={<ServiceRequested />} />,
 ];
-
-export default AllRoutes;

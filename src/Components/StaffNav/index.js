@@ -1,15 +1,31 @@
 import {
-  BusinessRounded,
-  HotelRounded,
+  BookOnline,
+  CleaningServices,
   PasswordRounded,
-  PeopleRounded,
+  Person2,
 } from "@mui/icons-material";
 const staffNavItems = [
   {
-    icon: <PasswordRounded color="primary" />,
-    name: "Change Password",
-    route: "/staff/changePassword",
+    icon: <BookOnline />,
+    name: "Bookings",
+    route: "/staff/bookings",
   },
+
+  {
+    icon: <CleaningServices />,
+    name: "Service Requested",
+    route: "/staff/serviceRequested",
+  },
+  {
+    icon: <Person2 />,
+    name: "Profile",
+    route: "/staff/profile",
+  },
+  // {
+  //   icon: <PasswordRounded color="primary" />,
+  //   name: "Change Password",
+  //   route: "/staff/changePassword",
+  // },
 ];
 
 export default staffNavItems;

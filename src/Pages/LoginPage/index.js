@@ -16,6 +16,9 @@ import {
 } from "@mui/material";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import { useNavigate } from "react-router-dom";
+import { personLogin } from "../../axios/PersonAPIs";
+import { useContext } from "react";
+import UserContext from "../../Contexts/UserContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,6 +27,7 @@ const LoginPage = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [errorMsgSubtitle, setErrorMsgSubtitle] = useState("");
   const [loginData, setLoginData] = useState("");
+  const [userContext, setUserContext] = useContext(UserContext);
 
   const [openBackdrop, setOpenBackdrop] = useState(false);
   const handleCloseBackdrop = () => setOpenBackdrop(false);
@@ -47,49 +51,39 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (loginData && JSON.stringify(loginData).length) {
-      const key = loginData.getsignin[0].customer_uuid;
-      const userKey = JSON.stringify(key);
-      let accessLevel = loginData.getsignin[0].access_level;
-      localStorage.setItem(`${process.env.REACT_APP_CUSTOMERUUID}`, userKey);
-      localStorage.setItem(`${process.env.REACT_APP_ACCESSLEVEL}`, accessLevel);
-      navigate("/");
+      localStorage.setItem("userinfo", JSON.stringify(loginData));
+      setUserContext(loginData);
+      if (loginData.Role == "Customer") navigate("/rooms");
+      else if (loginData.Role == "Admin") navigate("/admin/rooms");
+      else if (loginData.Role == "Staff") navigate("/staff/bookings");
+      else navigate("/");
     }
   }, [loginData]);
 
   const onSubmit = (event) => {
     setOpenBackdrop(true);
     event.preventDefault();
-    const formData = {
-      emailID: event.target[0].value,
-      password: event.target[1].value,
-    };
-    if (formData.password.length < 8) {
-      setOpenBackdrop(false);
-      setErrorMsg("Password should be at least 8 characters");
-      setErrorMsgSubtitle("Please try again!");
-    } else {
-      // userLogin(formData)
-      //   .then((response) => {
-      //     console.log("userLogin: ", response);
-      //     if (response.status < 300) {
-      //       setLoginData(response.data);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     if (err) {
-      //       if (err.response) {
-      //         if (err.response.data) {
-      //           const data = err.response.data;
-      //           if (data.length > 0) {
-      //             setErrorMsg(data[0]);
-      //             setErrorMsgSubtitle(data[1]);
-      //           } else {
-      //             setErrorMsg("unable to login");
-      //           }
-      //         }
-      //       }
-      //     }
-      //   });
+    const emailID = event.target[0].value;
+    const password = event.target[1].value;
+    if (emailID.length && password.length) {
+      personLogin(emailID, password)
+        .then((response) => {
+          console.log(response);
+          if (response.data.length) {
+            console.log(response.data[0], JSON.stringify(response.data[0]));
+
+            setLoginData(response.data[0]);
+          }
+          setOpenBackdrop(false);
+        })
+        .catch((err) => {
+          if (err) {
+            console.log({ err });
+            setOpenBackdrop(false);
+            setErrorMsg("Unable to login!");
+            setErrorMsgSubtitle("Please check your credentials and try again");
+          }
+        });
     }
   };
 
