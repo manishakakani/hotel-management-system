@@ -15,12 +15,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getRoomTypesByRoomTypeID } from "../../axios/RoomTypeAPIs";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
 import CheckAvailability from "../CheckAvailability";
 
 function RoomDetails() {
+  const { type } = useParams();
   const navigate = useNavigate();
+  const [roomDetails, setRoomDetails] = useState([]);
   const [roomBookContext, setRoomToBookContext] = useContext(RoomToBookContext);
   const [indexSelected, setIndexSelected] = useState(-1);
   const imageList = [
@@ -30,6 +33,12 @@ function RoomDetails() {
   const lengthOfImageList = imageList.length;
   const [imageToShow, setImageToShow] = useState("");
   const [bookRoom, setBookRoom] = useState(false);
+
+  useEffect(() => {
+    getRoomTypesByRoomTypeID(type).then((res) => {
+      setRoomDetails(res.data[0]);
+    });
+  }, []);
 
   const changeImage = () => {
     if (indexSelected === lengthOfImageList - 1) {
@@ -55,9 +64,8 @@ function RoomDetails() {
 
   const handleBookRoom = () => {
     const roomDetails = {
-      roomNumber: "201",
-      roomType: "Deluxe",
-      costPerDay: "9.99",
+      roomType: roomDetails.RoomType,
+      costPerDay: roomDetails.Rate,
       additionalCharges: "0",
       subCost: "9.99",
       TotalCost: "9.99",
@@ -125,7 +133,7 @@ function RoomDetails() {
             {" "}
             Room Type :{" "}
           </Typography>
-          <Typography variant="h6"> Deluxe </Typography>
+          <Typography variant="h6"> {roomDetails.RoomType} </Typography>
         </Box>
       </Box>
       <Box
@@ -137,7 +145,7 @@ function RoomDetails() {
         <Typography variant="h6" color="primary" paddingRight={2}>
           Cost/night :
         </Typography>
-        <Typography variant="h6">$9.99</Typography>
+        <Typography variant="h6">${roomDetails.Rate}</Typography>
       </Box>
       <Typography variant="caption">
         (Check-in: 12 PM, Check-out: 11 AM)
@@ -194,9 +202,9 @@ function RoomDetails() {
       <section id="availability">
         <CheckAvailability
           roomDetails={{
-            roomNumber: "201",
-            roomType: "Deluxe",
-            costPerDay: "9.99",
+            roomType: roomDetails.RoomType,
+            RoomTypeID: roomDetails.RoomTypeID,
+            costPerDay: roomDetails.Rate,
           }}
         />
       </section>

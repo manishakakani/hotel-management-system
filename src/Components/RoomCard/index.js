@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function RoomCard() {
+function RoomCard({ room }) {
   const navigate = useNavigate();
   const [indexSelected, setIndexSelected] = useState(-1);
   const imageList = [
@@ -20,7 +20,7 @@ function RoomCard() {
   const lengthOfImageList = imageList.length;
   const [imageToShow, setImageToShow] = useState("");
 
-  const handleCardClick = () => navigate("/room/201");
+  const handleCardClick = () => navigate("/room/" + room.RoomTypeID);
 
   useEffect(() => {
     if (imageList.length > 0) {
@@ -43,7 +43,10 @@ function RoomCard() {
 
   return (
     <Card sx={{ maxWidth: 345, cursor: "pointer" }} onClick={handleCardClick}>
-      <CardHeader title="Deluxe Room" subheader="$9.99/night" />
+      <CardHeader
+        title={room.RoomType}
+        subheader={"$" + room.Rate + "/night"}
+      />
       <CardMedia component="img" height="194" image={imageToShow} alt="room" />
       <CardContent>
         <Box display="flex" flexDirection="column">

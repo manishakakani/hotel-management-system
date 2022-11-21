@@ -31,3 +31,10 @@ export const updateBooking = (id, data) => {
 export const deleteBooking = (id) => {
   return axios.delete("http://localhost:5000/api/bookings/bookings/" + id);
 };
+
+export const roomsAvailableOnAGivenDate = (roomType, date) => {
+  return axios.post(
+    "http://localhost:5000/api/bookings/availability/" + roomType,
+    { date }
+  );
+};

@@ -4,22 +4,20 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
 import { useNavigate } from "react-router-dom";
+import { roomsAvailableOnAGivenDate } from "../../axios/BookingAPIs";
+import UserContext from "../../Contexts/UserContext";
 
 function CheckAvailability({ roomDetails }) {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
   const navigate = useNavigate();
   const [roomBookContext, setRoomToBookContext] = useContext(RoomToBookContext);
+  const [userContext, setUserContext] = useContext(UserContext);
   const [arrivalDate, setArrivalDate] = useState(new Date());
   const [leaveDate, setLeaveDate] = useState(new Date());
   const [stayDuration, setStayDuration] = useState(0);
   const [isAvailable, setIsAvaialble] = useState(false);
   const [noOfRooms, setNoOfRooms] = useState(1);
-  const [roomsAvailableForDays, setRoomsAvailabeForDays] = useState({
-    "11/17/2022": 2,
-    "11/18/2022": 3,
-    "11/19/2022": 3,
-    "11/20/2022": 1,
-  });
+  const [roomsAvailableForDays, setRoomsAvailabeForDays] = useState({});
   const [shouldProceed, setShouldProceed] = useState(false);
 
   useEffect(() => {
@@ -30,19 +28,46 @@ function CheckAvailability({ roomDetails }) {
         setShouldProceed(true);
       else setShouldProceed(false);
     } else setShouldProceed(false);
-  }, [noOfRooms]);
+  }, [noOfRooms, roomsAvailableForDays]);
+
+  useEffect(() => console.log(roomsAvailableForDays), [roomsAvailableForDays]);
 
   const handleCheckAvailablity = () => {
-    setIsAvaialble(true);
+    if (arrivalDate && leaveDate) {
+      var start = new Date(arrivalDate);
+      var end = new Date(leaveDate);
+      while (start < end && start.getDate() !== end.getDate()) {
+        start.setUTCHours(0, 0, 0, 0);
+        roomsAvailableOnAGivenDate(
+          roomDetails.RoomTypeID,
+          new Date(start).toISOString()
+        ).then((res) => {
+          const data = res.data;
+          setRoomsAvailabeForDays((oldValue) => {
+            return { ...oldValue, ...data };
+          });
+        });
+        var newDate = start.setDate(start.getDate() + 1);
+        start = new Date(newDate);
+      }
+      setIsAvaialble(true);
+    }
+  };
+
+  const getDisplayabaleDate = (key) => {
+    const date = new Date(key);
+    return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
   };
 
   const handleArrivalDateChange = (newValue) => {
     setArrivalDate(new Date(newValue));
+    setRoomsAvailabeForDays({});
     setIsAvaialble(false);
   };
 
   const handleLeaveDate = (newValue) => {
     setLeaveDate(new Date(newValue));
+    setRoomsAvailabeForDays({});
     setIsAvaialble(false);
   };
 
@@ -57,16 +82,22 @@ function CheckAvailability({ roomDetails }) {
   }, [arrivalDate, leaveDate]);
 
   const handleBookRoom = () => {
-    console.log({ stayDuration });
     let roomDetailsTemp = roomDetails;
-    const total = parseFloat(roomDetails["costPerDay"]) * stayDuration;
-    roomDetailsTemp["arrivalDate"] = arrivalDate;
-    roomDetailsTemp["duration"] = stayDuration;
+    const total =
+      parseFloat(roomDetails["costPerDay"]) * parseInt(stayDuration);
+    const arrdate = arrivalDate.setUTCHours(0, 0, 0, 0);
+    roomDetailsTemp["StartDate"] = new Date(arrdate).toISOString();
+    roomDetailsTemp["Duration"] = stayDuration;
+    roomDetailsTemp["CheckInTime"] = "";
+    roomDetailsTemp["CheckOutTime"] = "";
     roomDetailsTemp["departureDate"] = leaveDate;
-    roomDetailsTemp["noOfRooms"] = noOfRooms;
-    roomDetailsTemp["additionalCharges"] = "0";
-    roomDetailsTemp["subCost"] = total;
-    roomDetailsTemp["TotalCost"] = total;
+    roomDetailsTemp["BookingDates"] = Object.keys(roomsAvailableForDays);
+    roomDetailsTemp["NumberOfRooms"] = noOfRooms;
+    roomDetailsTemp["AdditionalCharges"] = "0";
+    roomDetailsTemp["SubTotal"] = total;
+    roomDetailsTemp["CustomerUniqueNumber"] = userContext.UniqueNumber;
+    roomDetailsTemp["TotalAmount"] = total;
+    roomDetailsTemp["RoomIDs"] = [];
     setRoomToBookContext(roomDetailsTemp);
   };
 
@@ -112,9 +143,18 @@ function CheckAvailability({ roomDetails }) {
             />
           </LocalizationProvider>
         </Box>
+        <Typography variant="caption">
+          Please select maximum of 5 days
+        </Typography>
         {!isAvailable ? (
           <Typography
-            disabled={!(stayDuration >= 1)}
+            disabled={
+              !(
+                stayDuration >= 1 &&
+                stayDuration <= 5 &&
+                Object.keys(roomsAvailableForDays).length == 0
+              )
+            }
             component={Button}
             variant="caption"
             onClick={handleCheckAvailablity}
@@ -156,7 +196,8 @@ function CheckAvailability({ roomDetails }) {
                 return (
                   <Grid item xs={4}>
                     <Typography variant="body1">
-                      {key} ({value} {value == 1 ? "room" : "rooms"})
+                      {getDisplayabaleDate(key)} ({value}&nbsp;
+                      {value == 1 ? "room" : "rooms"})
                     </Typography>
                   </Grid>
                 );
@@ -169,7 +210,11 @@ function CheckAvailability({ roomDetails }) {
               type="number"
               InputProps={{ inputProps: { min: 1, max: 5 } }}
               placeholder="No. of rooms"
-              helperText="You can select maximum of 5 rooms"
+              helperText={
+                "You can select maximum of " +
+                Math.min(...Object.values(roomsAvailableForDays)) +
+                " rooms"
+              }
               defaultValue={noOfRooms}
               onChange={(event) => setNoOfRooms(event.target.value)}
             />

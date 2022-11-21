@@ -1,6 +1,9 @@
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { addBooking } from "../../axios/BookingAPIs";
+import ErrorSnackBar from "../../Components/ErrorSnackBar";
+import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 
@@ -11,10 +14,32 @@ function ConfirmToBook() {
   const [arrivalDate, setArrivalDate] = useState();
   const [departureDate, setDepartureDate] = useState();
 
+  const [openSuccessBar, setOpenSuccessBar] = useState(false);
+  const [openErrorBar, setOpenErrorBar] = useState(false);
+  const handleSuccessBarClose = () => {
+    setRoomToBookContext();
+    setOpenSuccessBar(false);
+    navigate("/rooms");
+  };
+  const handleErrorBarClose = () => {
+    setOpenErrorBar(false);
+  };
+
+  const handleBooking = () => {
+    let data = roomBookContext;
+    delete data.roomType;
+    delete data.departureDate;
+    delete data.costPerDay;
+    addBooking(data)
+      .then((res) => setOpenSuccessBar(true))
+      .catch((err) => setOpenErrorBar(true));
+  };
+
   useEffect(() => {
     if (!roomBookContext) navigate("/rooms");
     else {
-      let arrdate = new Date(roomBookContext.arrivalDate);
+      console.log(roomBookContext);
+      let arrdate = new Date(roomBookContext.StartDate);
       const datestring =
         arrdate.getDate() +
         "-" +
@@ -103,8 +128,8 @@ function ConfirmToBook() {
             </Grid>
             <Grid item xs={6} lg={6}>
               <Typography variant="h6">
-                {roomBookContext.duration}{" "}
-                {roomBookContext.duration == 1 ? "Day" : "Days"}
+                {roomBookContext.Duration}{" "}
+                {roomBookContext.Duration == 1 ? "Day" : "Days"}
               </Typography>
             </Grid>
           </Grid>
@@ -117,8 +142,8 @@ function ConfirmToBook() {
             </Grid>
             <Grid item xs={6} lg={6}>
               <Typography variant="h6">
-                {roomBookContext.noOfRooms}{" "}
-                {roomBookContext.noOfRooms == 1 ? "Room" : "Rooms"}
+                {roomBookContext.NumberOfRooms}{" "}
+                {roomBookContext.NumberOfRooms == 1 ? "Room" : "Rooms"}
               </Typography>
             </Grid>
           </Grid>
@@ -133,8 +158,8 @@ function ConfirmToBook() {
               <Typography variant="h6">
                 {" "}
                 $
-                {roomBookContext.additionalCharges
-                  ? roomBookContext.additionalCharges
+                {roomBookContext.AdditionalCharges
+                  ? roomBookContext.AdditionalCharges
                   : 0}{" "}
               </Typography>
             </Grid>
@@ -149,9 +174,9 @@ function ConfirmToBook() {
             <Grid item xs={6} lg={6}>
               <Typography variant="h6">
                 $
-                {roomBookContext.subCost
-                  ? roomBookContext.subCost
-                  : roomBookContext.TotalCost}{" "}
+                {roomBookContext.SubTotal
+                  ? roomBookContext.SubTotal
+                  : roomBookContext.TotalAmount}{" "}
               </Typography>
             </Grid>
           </Grid>
@@ -163,15 +188,28 @@ function ConfirmToBook() {
               </Typography>
             </Grid>
             <Grid item xs={6} lg={6}>
-              <Typography variant="h6">${roomBookContext.TotalCost}</Typography>
+              <Typography variant="h6">
+                ${roomBookContext.TotalAmount}
+              </Typography>
             </Grid>
           </Grid>
           <Divider sx={{ width: "100%" }} />
         </Box>
       ) : null}
-      <Button marginY={4} variant="contained">
+      <Button marginY={4} variant="contained" onClick={handleBooking}>
         Confirm Booking
       </Button>
+      <SuccessSnackBar
+        open={openSuccessBar}
+        close={handleSuccessBarClose}
+        msg="Booking Successful!"
+      />
+      <ErrorSnackBar
+        open={openErrorBar}
+        close={handleErrorBarClose}
+        msg="Couldn't book the rooms at the moment."
+        caption="Please try again later."
+      />
     </Box>
   );
 }
