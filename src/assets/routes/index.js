@@ -26,20 +26,19 @@ export const CustomerRoutes = [
   <Route path="/room/:type/confirm" exact element={<ConfirmToBook />} />,
   <Route path="/history" exact element={<BookingHistory />} />,
   <Route path="/profile" exact element={<Profile />} />,
-  // <Route path="/changePassword" exact element={<ChangePassword />} />,
+  <Route path="/changepassword" exact element={<ChangePassword />} />,
 ];
 
 export const AdminRoutes = [
-  // <Route path="/admin/hotel" exact element={<Hotel />} />,
   <Route path="/admin/rooms" exact element={<Rooms />} />,
   <Route path="/admin/staff" exact element={<Staff />} />,
-  // <Route path="/admin/changePassword" exact element={<ChangePassword />} />,
+  <Route path="/admin/changepassword" exact element={<ChangePassword />} />,
   <Route path="/admin/bookings" exact element={<ListBookings />} />,
   <Route path="/admin/profile" exact element={<Profile />} />,
 ];
 
 export const StaffRoutes = [
-  // <Route path="/staff/changePassword" exact element={<ChangePassword />} />,
+  <Route path="/staff/changepassword" exact element={<ChangePassword />} />,
   <Route path="/staff/bookings" exact element={<ListBookings />} />,
   <Route path="/staff/profile" exact element={<Profile />} />,
   <Route path="/staff/serviceRequested" exact element={<ServiceRequested />} />,

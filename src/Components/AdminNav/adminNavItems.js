@@ -23,20 +23,20 @@ const adminNavItems = [
     route: "/admin/staff",
   },
   {
-    icon: <BookOnline />,
+    icon: <BookOnline color="primary" />,
     name: "Bookings",
     route: "/admin/bookings",
   },
   {
-    icon: <Person />,
+    icon: <Person color="primary" />,
     name: "Profile",
     route: "/admin/profile",
   },
-  // {
-  //   icon: <PasswordRounded color="primary" />,
-  //   name: "Change Password",
-  //   route: "/admin/changePassword",
-  // },
+  {
+    icon: <PasswordRounded color="primary" />,
+    name: "Change Password",
+    route: "/admin/changepassword",
+  },
 ];
 
 export default adminNavItems;

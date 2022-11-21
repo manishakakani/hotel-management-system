@@ -14,27 +14,37 @@ import { useForm } from "react-hook-form";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../../Contexts/UserContext";
+import { updatePerson } from "../../axios/PersonAPIs";
 
 function ChangePassword() {
   const { register, handleSubmit, formState, reset, watch } = useForm();
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
   const [openErrorBar, setOpenErrorBar] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [userContext, setUserContext] = useContext(UserContext);
   const navigate = useNavigate();
   const { errors } = formState;
 
   const formSubmitted = (data) => {
     setOpenBackdrop(true);
-    setTimeout(() => {
-      setOpenBackdrop(false);
-    }, 5000);
-    console.log({ data });
-    reset();
+    updatePerson(userContext.id, { Password: data.NewPassword })
+      .then((res) => {
+        let temp = userContext;
+        temp.Password = data.NewPassword;
+        setUserContext(temp);
+        localStorage.removeItem("userinfo");
+        localStorage.setItem("userinfo", JSON.stringify(temp));
+        setOpenSuccessBar(true);
+      })
+      .catch((err) => setOpenErrorBar(true))
+      .finally(() => reset());
   };
 
   const handleSuccessBarClose = () => {
     setOpenBackdrop(false);
     setOpenSuccessBar(false);
+    handleCancel();
   };
   const handleErrorBarClose = () => {
     setOpenBackdrop(false);
@@ -89,11 +99,17 @@ function ChangePassword() {
                 name="OldPassword"
                 {...register("OldPassword", {
                   required: "Required",
+                  validate: (value) => userContext.Password === value,
                 })}
               />
-              {errors.OldPassword && (
+              {errors?.OldPassword?.type == "required" && (
                 <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                   {errors.OldPassword.message}
+                </FormHelperText>
+              )}
+              {errors?.OldPassword?.type == "validate" && (
+                <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
+                  Old password is incorrect
                 </FormHelperText>
               )}
             </FormControl>

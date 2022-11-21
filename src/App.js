@@ -33,7 +33,7 @@ function App() {
   useEffect(() => {
     const userinfo = localStorage.getItem("userinfo");
     if (userinfo) {
-      setUserContext(userinfo);
+      setUserContext(JSON.parse(userinfo));
     }
   }, []);
 
