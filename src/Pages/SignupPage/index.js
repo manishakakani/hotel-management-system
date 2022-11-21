@@ -16,6 +16,7 @@ import {
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
+import { addPerson } from "../../axios/PersonAPIs";
 
 function SignUpPage() {
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
@@ -37,6 +38,7 @@ function SignUpPage() {
   };
 
   const handleSuccessBarClose = () => {
+    reset();
     onSuccessSignUp();
     setSuccessMsg("");
     setOpenSuccessBar(false);
@@ -56,34 +58,11 @@ function SignUpPage() {
   }, [successMsg]);
 
   const onSubmit = (data) => {
-    const { name, email_id, phone_number, password, confirm_password, gender } =
-      data;
-    console.log({ data });
-    if (password === confirm_password) {
-      //   const encodedPassword = Buffer.from(password).toString("base64");
-      //   let formData = {};
-
-      //   if (access_level === undefined) {
-      // registerMerchant(formData, encodedPassword);
-      // reset();
-      // setSuccessMsg("Sign up successful");
-      //   } else {
-      // const customer_id = await new Promise((resolve) => {
-      //   registerUser(formData, encodedPassword)
-      //     .then((response) => {
-      //       if (response.status < 300) {
-      //         resolve(response.data[0]);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       setErrorMsg(error.response.data);
-      //     });
-      // });
-
-      reset();
-      setSuccessMsg("Sign up successful!");
-      //   }
-    } else setErrorMsg("Passwords don't match!");
+    delete data.confirm_password;
+    data.Role = "Customer";
+    addPerson(data)
+      .then((res) => setOpenSuccessBar(true))
+      .catch((err) => setOpenErrorBar(true));
   };
 
   return (
@@ -124,21 +103,21 @@ function SignUpPage() {
                   Name *
                 </InputLabel>
                 <Input
-                  {...register("name", {
+                  {...register("Name", {
                     required: "Please enter your Name.",
                   })} // custom message
                   variant="standard"
                   id="userName"
                 />
-                {errors.name && (
+                {errors.Name && (
                   <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                     <Typography variant="caption" color="error">
-                      {errors.name.message}{" "}
+                      {errors.Name.message}{" "}
                     </Typography>
                   </FormHelperText>
                 )}
               </FormControl>
-              <FormControl
+              {/* <FormControl
                 sx={{
                   marginY: "0.6rem",
                   flex: "display",
@@ -203,25 +182,25 @@ function SignUpPage() {
                     {errors.gender.message}
                   </Typography>
                 </FormHelperText>
-              )}
+              )} */}
               <FormControl sx={{ marginY: "0.6rem" }}>
                 <InputLabel htmlFor="email" variant="standard">
                   Email *
                 </InputLabel>
                 <Input
                   //   defaultValue={isMerchant ? merchantEmail : ""}
-                  {...register("email_id", {
-                    required: "Please enter your email ID.",
+                  {...register("EmailID", {
+                    required: "Please enter your Email ID.",
                   })} // custom message
                   variant="standard"
                   id="email"
                   type="email"
                   //   readOnly={isMerchant}
                 />
-                {errors.email_id && (
+                {errors.EmailID && (
                   <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                     <Typography variant="caption" color="error">
-                      {errors.email_id.message}
+                      {errors.EmailID.message}
                     </Typography>
                   </FormHelperText>
                 )}
@@ -231,16 +210,16 @@ function SignUpPage() {
                   Phone Number *
                 </InputLabel>
                 <Input
-                  {...register("phone_number", {
+                  {...register("PhoneNumber", {
                     required: "Please enter your phone number.",
                   })} // custom message
                   variant="standard"
                   id="phoneNumber"
                 />
-                {errors.phone_number && (
+                {errors.PhoneNumber && (
                   <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                     <Typography variant="caption" color="error">
-                      {errors.phone_number.message}
+                      {errors.PhoneNumber.message}
                     </Typography>
                   </FormHelperText>
                 )}
@@ -250,16 +229,16 @@ function SignUpPage() {
                   Address *
                 </InputLabel>
                 <Input
-                  {...register("address", {
+                  {...register("Address", {
                     required: "Please enter your address.",
                   })} // custom message
                   variant="standard"
                   id="address"
                 />
-                {errors.address && (
+                {errors.Address && (
                   <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                     <Typography variant="caption" color="error">
-                      {errors.address.message}{" "}
+                      {errors.Address.message}{" "}
                     </Typography>
                   </FormHelperText>
                 )}
@@ -269,21 +248,20 @@ function SignUpPage() {
                   Password *
                 </InputLabel>
                 <Input
-                  {...register("password", {
+                  {...register("Password", {
                     required: "Please enter your Password.",
                     minLength: 8,
                   })} // custom message
                   variant="standard"
                   id="password"
                   type="password"
-                  name="password"
                 />
-                {errors.password && (
+                {errors.Password && (
                   <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
                     <Typography variant="caption" color="error">
-                      {errors.password.type === "minLength"
+                      {errors.Password.type === "minlength"
                         ? "Password should be at least 8 characters long"
-                        : errors.password.message}
+                        : errors.Password.message}
                     </Typography>
                   </FormHelperText>
                 )}
@@ -294,10 +272,10 @@ function SignUpPage() {
                 </InputLabel>
                 <Input
                   {...register("confirm_password", {
-                    validate: (value) => watch("password") === value,
+                    validate: (value) => watch("Password") === value,
                   })} // custom message
                   variant="standard"
-                  id="userName"
+                  id="confirmPassword"
                   type="password"
                 />
                 {errors.confirm_password && (
@@ -334,12 +312,13 @@ function SignUpPage() {
       <SuccessSnackBar
         open={openSuccessBar}
         close={handleSuccessBarClose}
-        msg={successMsg}
+        msg="Signup Successful!"
       />
       <ErrorSnackBar
         open={openErrorBar}
         close={handleErrorBarClose}
-        msg={errorMsg}
+        msg="Couldn't signup at the moment."
+        caption="Please try again later."
       />
     </Box>
   );
