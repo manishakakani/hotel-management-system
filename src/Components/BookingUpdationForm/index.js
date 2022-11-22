@@ -69,10 +69,11 @@ function BookingUpdationForm({ bookingDetails, close }) {
   const formSubmitted = (data) => {
     setOpenBackdrop(true);
     data.StartDate = dayjs(startDate).toISOString();
-    data.CheckInTime = dayjs(checkInTime).toISOString();
-    data.CheckOutTime = dayjs(checkOutTime).toISOString();
-    data.PaymentStatus = paymentStatus;
-    data.RoomIDs = Array.from(new Set(roomIDs.map((room) => room.RoomID)));
+    if (checkInTime) data.CheckInTime = dayjs(checkInTime).toISOString();
+    if (checkOutTime) data.CheckOutTime = dayjs(checkOutTime).toISOString();
+    if (paymentStatus) data.PaymentStatus = paymentStatus;
+    if (roomIDs)
+      data.RoomIDs = Array.from(new Set(roomIDs.map((room) => room.RoomID)));
     const updatedpayments = {
       TotalAmount: data.TotalAmount,
       PaymentStatus: data.PaymentStatus,

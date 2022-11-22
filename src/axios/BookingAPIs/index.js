@@ -28,6 +28,10 @@ export const getBookingsByDate = (date) => {
   );
 };
 
+export const getCustomerBookingsforToday = (id) => {
+  return axios.get("http://localhost:5000/api/bookings/bookings/today/" + id);
+};
+
 export const addBooking = (data) => {
   return axios.post("http://localhost:5000/api/bookings/bookings", data);
 };

@@ -1,10 +1,21 @@
-import { History, PasswordRounded, Person2, Room } from "@mui/icons-material";
+import {
+  History,
+  PasswordRounded,
+  Person2,
+  Room,
+  RoomService,
+} from "@mui/icons-material";
 
 const customerNavItems = [
   {
     icon: <Room color="primary" />,
     name: "Rooms",
     route: "/rooms",
+  },
+  {
+    icon: <RoomService color="primary" />,
+    name: "Request Service",
+    route: "/requestService",
   },
   {
     icon: <History color="primary" />,

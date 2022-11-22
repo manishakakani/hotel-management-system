@@ -5,6 +5,7 @@ import Staff from "../../AdminPages/Staff";
 import AllRoomsPage from "../../Pages/AllRoomsPage";
 import BookingHistory from "../../Pages/BookingHistory";
 import ConfirmToBook from "../../Pages/ConfirmToBook";
+import CustomerRequestService from "../../Pages/CustomerRequestService";
 import LoginPage from "../../Pages/LoginPage";
 import RoomDetails from "../../Pages/RoomDetails";
 import SignUpPage from "../../Pages/SignupPage";
@@ -26,6 +27,7 @@ export const CustomerRoutes = [
   <Route path="/room/:type" exact element={<RoomDetails />} />,
   <Route path="/room/:type/confirm" exact element={<ConfirmToBook />} />,
   <Route path="/history" exact element={<BookingHistory />} />,
+  <Route path="/requestService" exact element={<CustomerRequestService />} />,
   <Route path="/profile" exact element={<Profile />} />,
   <Route path="/changepassword" exact element={<ChangePassword />} />,
 ];
