@@ -11,16 +11,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { getRoomByRoomID } from "../../axios/RoomAPIs";
+import { deleteRoomType, getAllRoomTypes } from "../../axios/RoomTypeAPIs";
 import RoomsForm from "./RoomsForm";
 
 function Rooms() {
   const [addNew, setAddNew] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [details, setDetails] = useState({
-    RoomType: "Deluxe",
-    Rate: "9.99",
-    RoomNumbers: [201, 202],
-  });
+  const [details, setDetails] = useState([]);
+  const [detailsToEdit, setDetailsToEdit] = useState({});
 
   const [indexSelected, setIndexSelected] = useState(-1);
   const imageList = [
@@ -30,7 +29,40 @@ function Rooms() {
   const lengthOfImageList = imageList.length;
   const [imageToShow, setImageToShow] = useState("");
 
-  const handleEditRoom = () => setEdit(true);
+  const handleEditRoom = (a) => {
+    setDetailsToEdit(a);
+    setEdit(true);
+  };
+
+  useEffect(() => {
+    fetchDetails();
+  }, []);
+
+  const fetchDetails = () => {
+    getAllRoomTypes().then((res) => setDetails(res.data));
+  };
+
+  // useEffect(() => {
+  //   if (details.length) {
+  //     details.map((rt) => {
+  //       rt.RoomNumbers = [];
+  //       rt.Availability.map((a) => {
+  //         getRoomByRoomID(a).then((res) => {
+  //           rt.RoomNumbers = [
+  //             ...rt.RoomNumbers,
+  //             { [a]: res.data[0].RoomNumber },
+  //           ];
+  //         });
+  //       });
+  //     });
+  //   }
+  // }, [details]);
+
+  const handleDeleteRoom = (id) => {
+    deleteRoomType(id).then((res) => {
+      fetchDetails();
+    });
+  };
 
   useEffect(() => {
     if (imageList.length > 0) {
@@ -55,6 +87,7 @@ function Rooms() {
   const handleCloseForm = () => {
     setAddNew(false);
     setEdit(false);
+    fetchDetails();
   };
 
   return (
@@ -75,13 +108,13 @@ function Rooms() {
       {addNew || edit ? (
         <RoomsForm
           isNew={addNew ? true : false}
-          details={details}
+          details={detailsToEdit}
           images={imageList}
           close={handleCloseForm}
         />
       ) : (
         <Grid container spacing={4} padding={4}>
-          {[1, 2, 3, 4, 5, 6, 5, 34, 0, 54, 6, 0].map((a) => {
+          {details.map((a) => {
             return (
               <Grid
                 item
@@ -92,7 +125,7 @@ function Rooms() {
                 justifyContent="center"
               >
                 <Card sx={{ maxWidth: "300px" }}>
-                  <CardHeader title={details.RoomType + " Room"} />
+                  <CardHeader title={a.RoomType + " Room"} />
                   <CardMedia
                     component="img"
                     height="194"
@@ -101,31 +134,35 @@ function Rooms() {
                   />
                   <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                      Cost/Night: $9.99
+                      Cost/Night: ${a.Rate}
                     </Typography>
                     {/* <Typography variant="body2" color="text.secondary">
                       Smoking -{" "}
-                      {details.isSmokingAllowed === 1
+                      {a.isSmokingAllowed === 1
                         ? "Allowed"
                         : "Not Allowed"}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Pets -{" "}
-                      {details.arePetsAllowed === 1 ? "Allowed" : "Not Allowed"}
+                      {a.arePetsAllowed === 1 ? "Allowed" : "Not Allowed"}
                     </Typography> */}
                     <Typography variant="body2" color="text.secondary">
                       Rooms -{" "}
-                      {details.RoomNumbers.map((rm, idx) => {
-                        if (idx == details.RoomNumbers.length - 1) return rm;
-                        return rm + ", ";
-                      })}
+                      {a?.Availability
+                        ? a.Availability.map((rm, idx) => {
+                            if (idx == a.Availability.length - 1) return rm;
+                            return rm + ", ";
+                          })
+                        : null}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" onClick={handleEditRoom}>
+                    <Button size="small" onClick={() => handleEditRoom(a)}>
                       Edit
                     </Button>
-                    <Button size="small">Delete</Button>
+                    <Button size="small" onClick={() => handleDeleteRoom(a.id)}>
+                      Delete
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>

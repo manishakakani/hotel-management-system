@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
+import { addPerson } from "../../axios/PersonAPIs";
 
 function StaffForm({ isNew = true, details = {}, close }) {
   const winWidth = useContext(WindowsWidthContext);
@@ -27,12 +28,10 @@ function StaffForm({ isNew = true, details = {}, close }) {
   useEffect(() => {}, []);
 
   const formSubmitted = (data) => {
-    setOpenBackdrop(true);
-    setTimeout(() => {
-      setOpenBackdrop(false);
-    }, 5000);
-    console.log({ data });
-    reset();
+    data.Role = "Staff";
+    addPerson(data)
+      .then((res) => setOpenSuccessBar(true))
+      .catch((err) => setOpenErrorBar(true));
   };
 
   const handleSuccessBarClose = () => {
@@ -91,7 +90,7 @@ function StaffForm({ isNew = true, details = {}, close }) {
               )}
             </FormControl>
 
-            <FormControl
+            {/* <FormControl
               sx={{
                 marginY: "0.6rem",
                 flex: "display",
@@ -149,7 +148,7 @@ function StaffForm({ isNew = true, details = {}, close }) {
                   Other
                 </Typography>
               </Box>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="Address">
@@ -280,8 +279,8 @@ function StaffForm({ isNew = true, details = {}, close }) {
               close={handleSuccessBarClose}
               msg={
                 isNew
-                  ? "Amenity successfully added!"
-                  : "Amenity successfully updated!"
+                  ? "Staff Member successfully added!"
+                  : "Staff Member successfully updated!"
               }
             />
 
@@ -290,8 +289,8 @@ function StaffForm({ isNew = true, details = {}, close }) {
               close={handleErrorBarClose}
               msg={
                 isNew
-                  ? "Sorry! Amenity couldnot be added."
-                  : "Sorry! Amenity couldnot be updated."
+                  ? "Sorry! Staff Member couldnot be added."
+                  : "Sorry! Staff Member couldnot be updated."
               }
               subtitle="Please try again after sometime."
             />

@@ -25,6 +25,7 @@ import { Delete, PhotoCamera } from "@mui/icons-material";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
+import { addRoomType, updateRoomType } from "../../axios/RoomTypeAPIs";
 
 function RoomsForm({ isNew = true, details = {}, images, close }) {
   const winWidth = useContext(WindowsWidthContext);
@@ -37,13 +38,31 @@ function RoomsForm({ isNew = true, details = {}, images, close }) {
   const { errors } = formState;
 
   const formSubmitted = (data) => {
-    data["Images"] = imageList;
     setOpenBackdrop(true);
-    setTimeout(() => {
-      setOpenBackdrop(false);
-    }, 5000);
-    console.log({ data });
-    reset();
+    data["Images"] = imageList;
+    data["Availability"] = data.RoomNumbers.split(",");
+    if (isNew) {
+      addRoomType(data)
+        .then((res) => {
+          setOpenSuccessBar(true);
+        })
+        .catch((err) => setOpenErrorBar(true));
+    } else {
+      // const rooms = data.RoomNumbers.split(",");
+      // const avail = rooms.map((room) => {
+      //   const valarr = details.RoomNumbers.map((rooms) => {
+      //     if (Object.values(rooms)[0] == room) return Object.keys(rooms)[0];
+      //     else return room;
+      //   });
+      //   return valarr[0];
+      // });
+      // data["Availability"] = avail;
+      updateRoomType(details.id, data)
+        .then((res) => {
+          setOpenSuccessBar(true);
+        })
+        .catch((err) => setOpenErrorBar(true));
+    }
   };
 
   const handleSuccessBarClose = () => {
@@ -92,7 +111,7 @@ function RoomsForm({ isNew = true, details = {}, images, close }) {
               width: "100%",
             }}
           >
-            <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
+            {/* <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <input
                 accept="image/*"
                 id="icon-button-photo"
@@ -184,7 +203,7 @@ function RoomsForm({ isNew = true, details = {}, images, close }) {
                     : null}
                 </ImageList>
               ) : null}
-            </FormControl>
+            </FormControl> */}
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <InputLabel variant="standard" htmlFor="RoomType">
                 Room Type *
@@ -288,7 +307,9 @@ function RoomsForm({ isNew = true, details = {}, images, close }) {
               <Input
                 id="RoomNumbers"
                 type="text"
-                defaultValue={!isNew ? details.RoomNumber : null}
+                defaultValue={
+                  !isNew ? details.Availability.map((a) => a) : null
+                }
                 name="RoomNumbers"
                 {...register("RoomNumbers")}
               />

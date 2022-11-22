@@ -260,16 +260,19 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
       getPaymentDetailsByReservationNum(row.BookingID).then((res) => {
         setPayment(res.data[0]);
       });
-      row?.RoomIDs.map((id) => {
-        getRoomByRoomID(id).then((res) => {
-          setRooms((oldValues) => {
-            let val = oldValues.filter((oldV) => oldV.id == res.data[0].id);
-            if (val.length) {
-              return oldValues;
-            } else return [...oldValues, res?.data[0]];
+      if (row?.RoomIDs) {
+        row.RoomIDs.map((id) => {
+          getRoomByRoomID(id).then((res) => {
+            setRooms((oldValues) => {
+              console.log({ oldValues });
+              let val = oldValues.filter((oldV) => oldV?.id == res.data[0]?.id);
+              if (val.length) {
+                return oldValues;
+              } else return [...oldValues, res?.data[0]];
+            });
           });
         });
-      });
+      }
     }
   }, [row]);
 
@@ -354,7 +357,11 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
                 Rooms Booked
               </Typography>
               <Typography variant="body1">
-                {rooms?.map((r) => r.RoomNumber + ", ")}
+                {rooms.length
+                  ? rooms.map((r) => {
+                      return r.RoomNumber + ", ";
+                    })
+                  : null}
               </Typography>
             </TableCell>
             <TableCell>

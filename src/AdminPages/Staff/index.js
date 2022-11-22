@@ -9,18 +9,33 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { deletePerson, getStaff } from "../../axios/PersonAPIs";
+import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import StaffForm from "./StaffForm";
 
 function Staff() {
+  const winWidth = useContext(WindowsWidthContext);
   const [addNew, setAddNew] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [details, setDetails] = useState({});
+  const [details, setDetails] = useState([]);
 
-  const handleAddAmenity = () => setAddNew(true);
+  const handleAddStaff = () => setAddNew(true);
   const handleCloseForm = () => {
     setAddNew(false);
     setEdit(false);
+  };
+
+  useEffect(() => {
+    fetchStaff();
+  }, []);
+
+  const fetchStaff = () => {
+    getStaff().then((res) => setDetails(res.data));
+  };
+
+  const handleDeleteStaff = (staff) => {
+    deletePerson(staff.id).then((res) => fetchStaff());
   };
 
   return (
@@ -34,7 +49,7 @@ function Staff() {
         Staff
       </Typography>
       {!addNew ? (
-        <Button onClick={handleAddAmenity} color="primary">
+        <Button onClick={handleAddStaff} color="primary">
           {" "}
           <Add /> Add New{" "}
         </Button>
@@ -47,7 +62,7 @@ function Staff() {
         />
       ) : (
         <Grid container spacing={4} padding={4}>
-          {[1, 2, 3, 4, 5, 6, 5, 34, 0, 54, 6, 0].map((a) => {
+          {details?.map((a) => {
             return (
               <Grid
                 item
@@ -58,24 +73,46 @@ function Staff() {
                 display="flex"
                 justifyContent="center"
               >
-                <Card sx={{ maxWidth: "300px" }}>
+                <Card sx={{ width: winWidth > 320 ? 350 : 300, paddingX: 2 }}>
                   <CardHeader
-                    title="Alex"
-                    subheader="425-11-2428"
+                    title={a.Name}
+                    subheader={a.SSN}
                     titleTypographyProps={{ color: "primary" }}
                   />
                   <CardContent>
-                    <Typography variant="subtitle2">
-                      Address: 2-3/45, Road no 3, Bharat Nagar, Hyderabad -
-                      500056
-                      <br />
-                      Email ID: srutha@gmail.com
-                      <br />
-                      Phone Number: 9876784534
-                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid xs={5}>
+                        <Typography variant="subtitle2" color="primary">
+                          Address:
+                        </Typography>
+                      </Grid>
+                      <Grid xs={7}>
+                        <Typography variant="subtitle2">{a.Address}</Typography>
+                      </Grid>
+                      <Grid xs={5}>
+                        <Typography variant="subtitle2" color="primary">
+                          Email ID:
+                        </Typography>
+                      </Grid>
+                      <Grid xs={7}>
+                        <Typography variant="subtitle2">{a.EmailID}</Typography>
+                      </Grid>
+                      <Grid xs={5}>
+                        <Typography variant="subtitle2" color="primary">
+                          Phone Number:
+                        </Typography>
+                      </Grid>
+                      <Grid xs={7}>
+                        <Typography variant="subtitle2">
+                          {a.PhoneNumber}
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Delete</Button>
+                    <Button size="small" onClick={() => handleDeleteStaff(a)}>
+                      Delete
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>

@@ -8,6 +8,10 @@ export const getPersonByUniqueNum = (uniqueNum) => {
   return axios.get("http://localhost:5000/api/person/person/" + uniqueNum);
 };
 
+export const getStaff = () => {
+  return axios.get("http://localhost:5000/api/person/staff");
+};
+
 export const personLogin = (emailId, password) => {
   return axios.get(
     "http://localhost:5000/api/person/person/login/" + emailId + "/" + password
