@@ -10,10 +10,28 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getServiceRequestedRooms, updateRoom } from "../../axios/RoomAPIs";
 
 function ServiceRequested() {
-  const handleServiceRequest = (event) => console.log(event.target.checked);
+  const [serviceReqRooms, setServiceReqRooms] = useState([]);
+
+  useEffect(() => {
+    fetchSRRooms();
+  }, []);
+
+  const fetchSRRooms = () => {
+    getServiceRequestedRooms().then((res) => {
+      setServiceReqRooms(res.data);
+    });
+  };
+
+  const handleServiceRequest = (event, id) => {
+    updateRoom(id, { ServiceRequested: false }).then((res) => {
+      fetchSRRooms();
+    });
+  };
+
   return (
     <Grid container spacing={3} my={2}>
       <Grid item xs={12} align="center">
@@ -21,7 +39,7 @@ function ServiceRequested() {
           Service Requested
         </Typography>
       </Grid>
-      {[1, 2, 3, 5, 6, 7, 8, 9, 3, 5, 7].map((a, index) => {
+      {serviceReqRooms.map((a, index) => {
         return (
           <Grid item xs={12} md={6} lg={4} align="center" key={"sreq" + index}>
             <Card sx={{ maxWidth: 400 }}>
@@ -31,10 +49,10 @@ function ServiceRequested() {
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h6">Room No. 201</Typography>
+                <Typography variant="h6">Room No. {a.RoomNumber}</Typography>
                 <Box>
                   <Switch
-                    onChange={($event) => handleServiceRequest($event)}
+                    onChange={($event) => handleServiceRequest($event, a.id)}
                     inputProps={{ "aria-label": "controlled" }}
                   />
                   Completed

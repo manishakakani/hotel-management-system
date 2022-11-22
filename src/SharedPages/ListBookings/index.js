@@ -1,5 +1,11 @@
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import {
+  getBookingsByDate,
+  getCurrentBookings,
+  getFutureBookings,
+  getPastBookings,
+} from "../../axios/BookingAPIs";
 import BookingsTable from "../../Components/BookingsTable";
 
 function TabPanel(props) {
@@ -31,6 +37,19 @@ function a11yProps(index) {
 
 function ListBookings() {
   const [value, setValue] = useState(0);
+  const [currentBookings, setCurrentBookings] = useState([]);
+  const [futureBookings, setFutureBookings] = useState([]);
+  const [pastBookings, setPastBookings] = useState([]);
+
+  useEffect(() => {
+    let date = new Date();
+    date.setUTCHours(0, 0, 0, 0);
+    getBookingsByDate(date.toISOString()).then((res) => {
+      setCurrentBookings(res.data);
+    });
+    getPastBookings().then((res) => setPastBookings(res.data));
+    getFutureBookings().then((res) => setFutureBookings(res.data));
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -54,13 +73,13 @@ function ListBookings() {
       </Box>
 
       <TabPanel value={value} index={0}>
-        <BookingsTable />
+        <BookingsTable bookings={currentBookings} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <BookingsTable />
+        <BookingsTable bookings={futureBookings} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <BookingsTable />
+        <BookingsTable bookings={pastBookings} />
       </TabPanel>
     </Box>
   );

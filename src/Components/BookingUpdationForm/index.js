@@ -1,4 +1,8 @@
-import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
+import {
+  CheckBox,
+  CheckBoxOutlineBlank,
+  StayCurrentLandscapeTwoTone,
+} from "@mui/icons-material";
 import {
   Autocomplete,
   Backdrop,
@@ -20,31 +24,70 @@ import {
   LocalizationProvider,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useContext, useState } from "react";
+import dayjs from "dayjs";
+import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { updateBooking } from "../../axios/BookingAPIs";
+import { updatePaymentDetails } from "../../axios/PaymentsAPIs";
+import { getAllRooms } from "../../axios/RoomAPIs";
 import WindowsWidthContext from "../../Contexts/WindowsWidthContext";
 import ErrorSnackBar from "../ErrorSnackBar";
 import SuccessSnackBar from "../SuccessSnackBar";
 
 function BookingUpdationForm({ bookingDetails, close }) {
+  const { row, person, payment, rooms } = bookingDetails;
   const winWidth = useContext(WindowsWidthContext);
-  const { register, handleSubmit, formState, reset, control } = useForm();
+  const { register, handleSubmit, formState, reset, control, setValue } =
+    useForm();
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
   const [openErrorBar, setOpenErrorBar] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [allRooms, setAllRooms] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [checkInTime, setCheckInTime] = useState("");
+  const [checkOutTime, setCheckOutTime] = useState("");
+  const [roomIDs, setRoomIDs] = useState([]);
+  const [paymentStatus, setPaymentStatus] = useState("");
+
   const { errors } = formState;
 
   const icon = <CheckBoxOutlineBlank fontSize="small" />;
   const checkedIcon = <CheckBox fontSize="small" />;
 
+  useEffect(() => {
+    getAllRooms().then((res) => setAllRooms(res.data));
+  }, []);
+
+  useEffect(() => {
+    setStartDate(row?.StartDate);
+    setCheckInTime(row?.CheckInTime);
+    setCheckOutTime(row?.CheckOutTime);
+    setRoomIDs(rooms);
+    setPaymentStatus(payment?.PaymentStatus);
+  }, [row]);
+
   const formSubmitted = (data) => {
-    console.log({ data });
     setOpenBackdrop(true);
-    setTimeout(() => {
-      setOpenBackdrop(false);
-    }, 5000);
-    console.log({ data });
-    reset();
+    data.StartDate = dayjs(startDate).toISOString();
+    data.CheckInTime = dayjs(checkInTime).toISOString();
+    data.CheckOutTime = dayjs(checkOutTime).toISOString();
+    data.PaymentStatus = paymentStatus;
+    data.RoomIDs = Array.from(new Set(roomIDs.map((room) => room.RoomID)));
+    const updatedpayments = {
+      TotalAmount: data.TotalAmount,
+      PaymentStatus: data.PaymentStatus,
+      AmountPaid: data.AmountPaid,
+    };
+    if (data.AmountPaid !== payment.AmountPaid)
+      updatedpayments.PaymentDate = data.PaymentDate;
+    delete data.AmountPaid;
+    delete data.PaymentStatus;
+    console.log(data, updatedpayments);
+    updateBooking(row.id, data).then((res) => {
+      updatePaymentDetails(payment.id, updatedpayments).then((response) => {
+        setOpenSuccessBar(true);
+      });
+    });
   };
 
   const handleSuccessBarClose = () => {
@@ -90,10 +133,10 @@ function BookingUpdationForm({ bookingDetails, close }) {
               <Input
                 id="BookingID"
                 type="text"
-                value={bookingDetails.BookingID}
+                value={row.BookingID}
                 readonly
                 name="BookingID"
-                {...register("BookingID")}
+                // {...register("BookingID")}
               />
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
@@ -103,19 +146,23 @@ function BookingUpdationForm({ bookingDetails, close }) {
               <Input
                 id="Name"
                 type="text"
-                value={bookingDetails.Name}
+                value={person.Name}
                 readonly
-                name="Name"
-                {...register("Name")}
+                // name="Name"
+                // {...register("Name")}
               />
             </FormControl>
             <FormControl fullWidth sx={{ marginY: "0.8rem" }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Arrival Date"
-                  value={bookingDetails?.StartDate}
+                  name="StartDate"
+                  value={startDate}
+                  format="DD-MM-YYYY"
+                  onChange={(e) => {
+                    setStartDate(e);
+                  }}
                   renderInput={(params) => <TextField {...params} />}
-                  {...register("StartDate")}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -123,9 +170,11 @@ function BookingUpdationForm({ bookingDetails, close }) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
                   label="Check-in Time"
-                  value={bookingDetails?.CheckInTime}
                   renderInput={(params) => <TextField {...params} />}
-                  {...register("CheckInTime")}
+                  value={checkInTime}
+                  onChange={(e) => {
+                    setCheckInTime(e);
+                  }}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -133,9 +182,11 @@ function BookingUpdationForm({ bookingDetails, close }) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
                   label="Check-out Time"
-                  value={bookingDetails?.CheckOutTime}
                   renderInput={(params) => <TextField {...params} />}
-                  {...register("CheckOutTime")}
+                  value={checkOutTime}
+                  onChange={(e) => {
+                    setCheckOutTime(e);
+                  }}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -147,7 +198,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 id="NumberOfRooms"
                 readonly
                 type="text"
-                defaultValue={bookingDetails?.NumberOfRooms}
+                defaultValue={row?.NumberOfRooms}
                 name="NumberOfRooms"
                 {...register("NumberOfRooms")}
               />
@@ -156,36 +207,41 @@ function BookingUpdationForm({ bookingDetails, close }) {
               {/* <InputLabel variant="standard" htmlFor="RoomIDs">
                 Rooms Assigned
               </InputLabel> */}
-              <Controller
-                control={control}
-                name="RoomIDs"
-                render={({ field: { onChange } }) => (
-                  <Autocomplete
-                    multiple
-                    id="checkboxes-tags-demo"
-                    options={["1", "2"]}
-                    defaultValue={["2"]}
-                    disableCloseOnSelect
-                    onChange={(event, data) => onChange(data)}
-                    getOptionLabel={(option) => option}
-                    renderOption={(props, option, { selected }) => (
-                      <li {...props}>
-                        <Checkbox
-                          icon={icon}
-                          checkedIcon={checkedIcon}
-                          style={{ marginRight: 8 }}
-                          checked={selected}
-                        />
-                        {option}
-                      </li>
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        placeholder="Room Numbers"
-                      />
-                    )}
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={allRooms}
+                defaultValue={rooms}
+                disableCloseOnSelect
+                onChange={(event, data) => {
+                  // const unique = [
+                  //   ...new Map(
+                  //     data.map((item) => [item["id"], item])
+                  //   ).values(),
+                  // ];
+                  // console.log({ unique });
+                  // const toreturn = Array.from(
+                  //   new Set(data.map((d) => d.RoomID))
+                  // );
+                  setRoomIDs(data);
+                }}
+                getOptionLabel={(option) => option.RoomNumber}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.RoomNumber}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="standard"
+                    placeholder="Room Numbers"
                   />
                 )}
               />
@@ -198,7 +254,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 id="SubTotal"
                 readonly
                 type="text"
-                defaultValue={bookingDetails?.SubTotal}
+                defaultValue={row?.SubTotal}
                 name="SubTotal"
                 {...register("SubTotal")}
               />
@@ -211,7 +267,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 id="AdditionalCharges"
                 readonly
                 type="text"
-                defaultValue={bookingDetails?.AdditionalCharges}
+                defaultValue={row?.AdditionalCharges}
                 name="AdditionalCharges"
                 {...register("AdditionalCharges")}
               />
@@ -224,7 +280,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 id="TotalAmount"
                 readonly
                 type="text"
-                defaultValue={bookingDetails?.TotalAmount}
+                defaultValue={row?.TotalAmount}
                 name="TotalAmount"
                 {...register("TotalAmount")}
               />
@@ -237,7 +293,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
                 id="AmountPaid"
                 readonly
                 type="text"
-                defaultValue={bookingDetails?.AmountPaid}
+                defaultValue={payment?.AmountPaid}
                 name="AmountPaid"
                 {...register("AmountPaid")}
               />
@@ -248,24 +304,20 @@ function BookingUpdationForm({ bookingDetails, close }) {
               sx={{ marginY: "0.8rem" }}
             >
               <InputLabel id="PaymentStatus">Payment Status</InputLabel>
-              <Controller
-                control={control}
-                name="RoomIDs"
-                render={({ field: { onChange } }) => (
-                  <Select
-                    fullWidth
-                    labelId="PaymentStatus"
-                    id="PaymentStatus"
-                    defaultValue={bookingDetails?.PaymentStatus}
-                    onChange={onChange}
-                    label="PaymentStatus"
-                  >
-                    <MenuItem value={"Unpaid"}>Unpaid</MenuItem>
-                    <MenuItem value={"Paid Partially"}>Paid Partially</MenuItem>
-                    <MenuItem value={"Completed"}>Completed</MenuItem>
-                  </Select>
-                )}
-              />
+              <Select
+                fullWidth
+                labelId="PaymentStatus"
+                id="PaymentStatus"
+                value={paymentStatus}
+                onChange={(e) => {
+                  setPaymentStatus(e.target.value);
+                }}
+                label="PaymentStatus"
+              >
+                <MenuItem value={"Unpaid"}>Unpaid</MenuItem>
+                <MenuItem value={"Partially Paid"}>Partially Paid</MenuItem>
+                <MenuItem value={"Completed"}>Completed</MenuItem>
+              </Select>
             </FormControl>
 
             <Box

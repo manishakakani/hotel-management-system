@@ -24,14 +24,14 @@ export default function BookingInfo({ bookingDetails }) {
   useEffect(() => {
     if (bookingDetails?.RoomIDs) {
       console.log({ RoomIDs: bookingDetails.RoomIDs });
-      bookingDetails.RoomIDs.map((id) => {
+      bookingDetails?.RoomIDs?.map((id) => {
         getRoomByRoomID(id).then((res) => {
           //   console.log({ [id]: res.data });
           setRoomNumbers((oldValue) => {
             const dup = oldValue.filter((val) => val == res.data[0].RoomNumber);
             if (dup.length) {
               return oldValue;
-            } else [...oldValue, res.data[0].RoomNumber];
+            } else return [...oldValue, res.data[0].RoomNumber];
           });
         });
       });
@@ -44,17 +44,22 @@ export default function BookingInfo({ bookingDetails }) {
 
   return (
     <Box>
-      <Card sx={{ width: 300, cursor: "pointer" }} onClick={handleOpen}>
+      <Card
+        sx={{ width: winWidth > 320 ? 350 : 300, cursor: "pointer" }}
+        onClick={handleOpen}
+      >
         <CardHeader
           sx={{ paddingBottom: 0 }}
           titleTypographyProps={{ color: "primary" }}
           title={
             <Grid container spacing={3}>
               <Grid item xs={5}>
-                <Typography color="primary">Booking ID:</Typography>
+                <Typography variant="h6" color="primary">
+                  Booking ID:
+                </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography color="text.primary">
+                <Typography color="text.primary" variant="h6">
                   {bookingDetails.BookingID}
                 </Typography>
               </Grid>
@@ -65,12 +70,12 @@ export default function BookingInfo({ bookingDetails }) {
           <Box display="flex" flexDirection="column">
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <Typography variant="body2" color="primary">
+                <Typography variant="body1" color="primary">
                   Room No:
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   {roomNumbers.map((rmnum, idx) => {
                     return (
                       rmnum + (idx !== roomNumbers.length - 1 ? ", " : ".")
@@ -81,22 +86,22 @@ export default function BookingInfo({ bookingDetails }) {
             </Grid>
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <Typography variant="body2" color="primary">
+                <Typography variant="body1" color="primary">
                   Room Type:
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2">{roomType}</Typography>
+                <Typography variant="body1">{roomType}</Typography>
               </Grid>
             </Grid>
             <Grid container spacing={3}>
               <Grid item xs={4}>
-                <Typography variant="body2" color="primary">
+                <Typography variant="body1" color="primary">
                   Amount:
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2">
+                <Typography variant="body1">
                   ${bookingDetails.TotalAmount}
                 </Typography>
               </Grid>
@@ -110,7 +115,12 @@ export default function BookingInfo({ bookingDetails }) {
         scroll="paper"
         fullScreen={winWidth < 800}
       >
-        <BookingDetails closeDialog={handleClose} />
+        <BookingDetails
+          details={bookingDetails}
+          roomNumbers={roomNumbers}
+          roomType={roomType}
+          closeDialog={handleClose}
+        />
       </Dialog>
     </Box>
   );

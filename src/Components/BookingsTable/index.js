@@ -24,32 +24,9 @@ import { visuallyHidden } from "@mui/utils";
 import { Edit, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import BookingUpdationForm from "../BookingUpdationForm";
-
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
-];
+import { getPersonByUniqueNum } from "../../axios/PersonAPIs";
+import { getPaymentDetailsByReservationNum } from "../../axios/PaymentsAPIs";
+import { getRoomByRoomID } from "../../axios/RoomAPIs";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -243,12 +220,58 @@ EnhancedTableToolbar.propTypes = {
 };
 
 function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
-  const isItemSelected = isSelected(row.name);
+  const isItemSelected = isSelected(row.id);
   const labelId = `enhanced-table-checkbox-${index}`;
   const [open, setOpen] = React.useState(false);
+  const [person, setPerson] = React.useState();
+  const [payment, setPayment] = React.useState();
+  const [rooms, setRooms] = React.useState([]);
   const handleExpandClick = () => setOpen(!open);
 
-  const handleUpdate = () => openForm({ BookingID: "TR5678", Name: "hsdkjhk" });
+  const handleUpdate = () => openForm({ row, person, payment, rooms });
+
+  const getDate = (date) => {
+    const newdate = new Date(date);
+    return (
+      newdate.getFullYear() + "/" + newdate.getMonth() + "/" + newdate.getDate()
+    );
+  };
+
+  const getDateTime = (datetime) => {
+    const newdate = new Date(datetime);
+    return (
+      newdate.getFullYear() +
+      "/" +
+      newdate.getMonth() +
+      "/" +
+      newdate.getDate() +
+      " " +
+      newdate.getHours() +
+      ":" +
+      newdate.getMinutes()
+    );
+  };
+
+  React.useEffect(() => {
+    if (Object.keys(row).length !== 0) {
+      getPersonByUniqueNum(row.CustomerUniqueNumber).then((res) => {
+        setPerson(res.data[0]);
+      });
+      getPaymentDetailsByReservationNum(row.BookingID).then((res) => {
+        setPayment(res.data[0]);
+      });
+      row?.RoomIDs.map((id) => {
+        getRoomByRoomID(id).then((res) => {
+          setRooms((oldValues) => {
+            let val = oldValues.filter((oldV) => oldV.id == res.data[0].id);
+            if (val.length) {
+              return oldValues;
+            } else return [...oldValues, res?.data[0]];
+          });
+        });
+      });
+    }
+  }, [row]);
 
   return (
     <>
@@ -257,14 +280,14 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
         role="checkbox"
         aria-checked={isItemSelected}
         tabIndex={-1}
-        key={row.name}
+        key={row.id}
         selected={isItemSelected}
         sx={{ backgroundColor: open ? "#f5f5f5" : "whhite" }}
       >
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
-            onClick={(event) => handleClick(event, row.name)}
+            onClick={(event) => handleClick(event, row.id)}
             checked={isItemSelected}
             inputProps={{
               "aria-labelledby": labelId,
@@ -272,19 +295,21 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
           />
         </TableCell>
         <TableCell component="th" id={labelId} scope="row" padding="none">
-          <Typography variant="body1">{row.name}</Typography>
+          <Typography variant="body1">{row.BookingID}</Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{row.calories}</Typography>
+          <Typography variant="body1">{person?.Name}</Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{row.fat}</Typography>
+          <Typography variant="body1">
+            {row.StartDate ? getDate(row.StartDate) : ""}
+          </Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{row.carbs}</Typography>
+          <Typography variant="body1">{row.Duration}</Typography>
         </TableCell>
         <TableCell>
-          <Typography variant="body1">{row.carbs}</Typography>
+          <Typography variant="body1">{row.NumberOfRooms}</Typography>
         </TableCell>
         <TableCell>
           <IconButton onClick={handleExpandClick}>
@@ -306,31 +331,39 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
               <Typography variant="body1" color="primary">
                 Phone Number
               </Typography>
-              <Typography variant="body1">+1 313-345-8976</Typography>
+              <Typography variant="body1">{person?.PhoneNumber}</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Check-in Time
               </Typography>
-              <Typography variant="body1">12-11-2022 11:00 AM</Typography>
+              <Typography variant="body1">
+                {row.CheckInTime ? getDateTime(row.CheckInTime) : ""}
+              </Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Check-out Time
               </Typography>
-              <Typography variant="body1">12-15-2022 10:00 AM</Typography>
+              <Typography variant="body1">
+                {row.CheckOutTime ? getDateTime(row.CheckOutTime) : ""}
+              </Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Rooms Booked
               </Typography>
-              <Typography variant="body1">201, 202</Typography>
+              <Typography variant="body1">
+                {rooms?.map((r) => r.RoomNumber + ", ")}
+              </Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Paid On
               </Typography>
-              <Typography variant="body1">12-11-2022 11:00 AM</Typography>
+              <Typography variant="body1">
+                {payment?.PaymentDate ? getDate(payment.PaymentDate) : ""}
+              </Typography>
             </TableCell>
             <TableCell />
           </TableRow>
@@ -346,31 +379,31 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
               <Typography variant="body1" color="primary">
                 Additional Charges
               </Typography>
-              <Typography variant="body1">$9.99</Typography>
+              <Typography variant="body1">${row.AdditionalCharges}</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Sub Total
               </Typography>
-              <Typography variant="body1">$49.99</Typography>
+              <Typography variant="body1">${row.SubTotal}</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Grand Total
               </Typography>
-              <Typography variant="body1">$58.98</Typography>
+              <Typography variant="body1">${row.TotalAmount}</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Amount Paid
               </Typography>
-              <Typography variant="body1">$58.98</Typography>
+              <Typography variant="body1">${payment?.AmountPaid}</Typography>
             </TableCell>
             <TableCell>
               <Typography variant="body1" color="primary">
                 Payment Status
               </Typography>
-              <Typography variant="body1"> Partially Paid </Typography>
+              <Typography variant="body1"> {payment?.PaymentStatus}</Typography>
             </TableCell>
             <TableCell>
               <Tooltip title="Update">
@@ -386,7 +419,7 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
   );
 }
 
-export default function BookingsTable() {
+export default function BookingsTable({ bookings }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -404,7 +437,7 @@ export default function BookingsTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = bookings.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -420,12 +453,12 @@ export default function BookingsTable() {
     setDetailsToUpdate(null);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -457,7 +490,7 @@ export default function BookingsTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - bookings.length) : 0;
 
   return (
     <Box
@@ -490,12 +523,12 @@ export default function BookingsTable() {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={rows.length}
+                rowCount={bookings.length}
               />
               <TableBody>
                 {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.sort(getComparator(order, orderBy)).slice() */}
-                {stableSort(rows, getComparator(order, orderBy))
+                {stableSort(bookings, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
@@ -523,7 +556,7 @@ export default function BookingsTable() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={bookings.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

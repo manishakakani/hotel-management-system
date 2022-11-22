@@ -2,6 +2,7 @@ import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addBooking } from "../../axios/BookingAPIs";
+import { addPaymentDetails } from "../../axios/PaymentsAPIs";
 import ErrorSnackBar from "../../Components/ErrorSnackBar";
 import SuccessSnackBar from "../../Components/SuccessSnackBar";
 import RoomToBookContext from "../../Contexts/RoomToBookContext";
@@ -31,7 +32,9 @@ function ConfirmToBook() {
     delete data.departureDate;
     delete data.costPerDay;
     addBooking(data)
-      .then((res) => setOpenSuccessBar(true))
+      .then((res) => {
+        setOpenSuccessBar(true);
+      })
       .catch((err) => setOpenErrorBar(true));
   };
 

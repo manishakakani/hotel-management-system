@@ -1,15 +1,21 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import UserContext from "../../Contexts/UserContext";
 import WinWidthContext from "../../Contexts/WindowsWidthContext";
 
 function Profile() {
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const winWidth = useContext(WinWidthContext);
   const [user, setUser] = useContext(UserContext);
 
-  const handleChangePassword = () => navigate("../changepassword");
+  const handleChangePassword = () => {
+    let prefix = "";
+    if (user.Role == "Admin") prefix = "/admin";
+    else if (user.Role == "Staff") prefix = "/staff";
+    navigate(prefix + "/changepassword");
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" my={4}>

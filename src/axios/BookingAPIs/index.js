@@ -4,6 +4,14 @@ export const getAllBookings = () => {
   return axios.get("http://localhost:5000/api/bookings/bookings");
 };
 
+export const getPastBookings = () => {
+  return axios.get("http://localhost:5000/api/bookings/pastbookings");
+};
+
+export const getFutureBookings = () => {
+  return axios.get("http://localhost:5000/api/bookings/futurebookings");
+};
+
 export const getBookingByResNum = (resNum) => {
   return axios.get("http://localhost:5000/api/bookings/bookings/" + resNum);
 };
