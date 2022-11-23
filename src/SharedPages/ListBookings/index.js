@@ -42,6 +42,10 @@ function ListBookings() {
   const [pastBookings, setPastBookings] = useState([]);
 
   useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = () => {
     let date = new Date();
     date.setUTCHours(0, 0, 0, 0);
     getBookingsByDate(date.toISOString()).then((res) => {
@@ -49,10 +53,14 @@ function ListBookings() {
     });
     getPastBookings().then((res) => setPastBookings(res.data));
     getFutureBookings().then((res) => setFutureBookings(res.data));
-  }, []);
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleRefresh = () => {
+    fetchBookings();
   };
 
   return (
@@ -73,13 +81,13 @@ function ListBookings() {
       </Box>
 
       <TabPanel value={value} index={0}>
-        <BookingsTable bookings={currentBookings} />
+        <BookingsTable bookings={currentBookings} refresh={handleRefresh} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <BookingsTable bookings={futureBookings} />
+        <BookingsTable bookings={futureBookings} refresh={handleRefresh} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <BookingsTable bookings={pastBookings} />
+        <BookingsTable bookings={pastBookings} refresh={handleRefresh} />
       </TabPanel>
     </Box>
   );

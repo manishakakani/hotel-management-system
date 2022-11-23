@@ -57,6 +57,7 @@ function RoomsForm({ isNew = true, details = {}, images, close }) {
       //   return valarr[0];
       // });
       // data["Availability"] = avail;
+      data["RoomTypeID"] = details.RoomTypeID;
       updateRoomType(details.id, data)
         .then((res) => {
           setOpenSuccessBar(true);

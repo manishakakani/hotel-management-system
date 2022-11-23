@@ -24,6 +24,7 @@ function Staff() {
   const handleCloseForm = () => {
     setAddNew(false);
     setEdit(false);
+    fetchStaff();
   };
 
   useEffect(() => {

@@ -79,7 +79,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
       PaymentStatus: data.PaymentStatus,
       AmountPaid: data.AmountPaid,
     };
-    if (data.AmountPaid !== payment.AmountPaid)
+    if (data.AmountPaid !== payment?.AmountPaid)
       updatedpayments.PaymentDate = data.PaymentDate;
     delete data.AmountPaid;
     delete data.PaymentStatus;
@@ -147,7 +147,7 @@ function BookingUpdationForm({ bookingDetails, close }) {
               <Input
                 id="Name"
                 type="text"
-                value={person.Name}
+                value={person?.Name}
                 readonly
                 // name="Name"
                 // {...register("Name")}

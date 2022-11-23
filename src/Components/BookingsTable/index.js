@@ -27,6 +27,7 @@ import BookingUpdationForm from "../BookingUpdationForm";
 import { getPersonByUniqueNum } from "../../axios/PersonAPIs";
 import { getPaymentDetailsByReservationNum } from "../../axios/PaymentsAPIs";
 import { getRoomByRoomID } from "../../axios/RoomAPIs";
+import { deleteBooking } from "../../axios/BookingAPIs";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -157,7 +158,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, handleDelete } = props;
 
   return (
     <Toolbar
@@ -200,7 +201,7 @@ function EnhancedTableToolbar(props) {
       {
         numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={handleDelete}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -426,7 +427,7 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
   );
 }
 
-export default function BookingsTable({ bookings }) {
+export default function BookingsTable({ bookings, refresh }) {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -458,6 +459,7 @@ export default function BookingsTable({ bookings }) {
   const handleCloseUpdationForm = () => {
     setOpenUpdationForm(false);
     setDetailsToUpdate(null);
+    refresh();
   };
 
   const handleClick = (event, id) => {
@@ -493,6 +495,19 @@ export default function BookingsTable({ bookings }) {
     setDense(event.target.checked);
   };
 
+  const handleDelete = () => {
+    if (selected.length) {
+      selected.map((select, idx) => {
+        deleteBooking(select).then((res) => {
+          if (idx == selected.length - 1) {
+            refresh();
+            setSelected([]);
+          }
+        });
+      });
+    }
+  };
+
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -517,7 +532,10 @@ export default function BookingsTable({ bookings }) {
         />
       ) : (
         <Paper sx={{ width: "90%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            handleDelete={handleDelete}
+          />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
