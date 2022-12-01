@@ -6,6 +6,7 @@ import RoomToBookContext from "../../Contexts/RoomToBookContext";
 import { useNavigate } from "react-router-dom";
 import { roomsAvailableOnAGivenDate } from "../../axios/BookingAPIs";
 import UserContext from "../../Contexts/UserContext";
+import dayjs from "dayjs";
 
 function CheckAvailability({ roomDetails }) {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -30,7 +31,21 @@ function CheckAvailability({ roomDetails }) {
     } else setShouldProceed(false);
   }, [noOfRooms, roomsAvailableForDays]);
 
-  useEffect(() => console.log(roomsAvailableForDays), [roomsAvailableForDays]);
+  const sortroomsAvailable = () => {
+    if (Object.keys(roomsAvailableForDays).length) {
+      setRoomsAvailabeForDays(
+        Object.keys(roomsAvailableForDays)
+          .sort()
+          .reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: roomsAvailableForDays[key],
+            }),
+            {}
+          )
+      );
+    }
+  };
 
   const handleCheckAvailablity = () => {
     if (arrivalDate && leaveDate) {
@@ -56,11 +71,16 @@ function CheckAvailability({ roomDetails }) {
 
   const getDisplayabaleDate = (key) => {
     const date = new Date(key);
-    return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
+    // date.toLocaleDateString();
+    // date.setUTCHours(0, 0, 0, 0);
+    console.log(date.getUTCDate());
+    return (
+      date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
+    );
   };
 
   const handleArrivalDateChange = (newValue) => {
-    setArrivalDate(new Date(newValue));
+    setArrivalDate(new Date(dayjs(newValue)));
     setRoomsAvailabeForDays({});
     setIsAvaialble(false);
   };

@@ -18,7 +18,7 @@ import { addPerson } from "../../axios/PersonAPIs";
 
 function StaffForm({ isNew = true, details = {}, close }) {
   const winWidth = useContext(WindowsWidthContext);
-  const { register, handleSubmit, formState, reset } = useForm();
+  const { register, handleSubmit, formState, reset, watch } = useForm();
   const [openSuccessBar, setOpenSuccessBar] = useState(false);
   const [openErrorBar, setOpenErrorBar] = useState(false);
   const [openBackdrop, setOpenBackdrop] = useState(false);
@@ -28,6 +28,7 @@ function StaffForm({ isNew = true, details = {}, close }) {
   useEffect(() => {}, []);
 
   const formSubmitted = (data) => {
+    delete data.confirm_password;
     data.Role = "Staff";
     addPerson(data)
       .then((res) => setOpenSuccessBar(true))
@@ -236,7 +237,7 @@ function StaffForm({ isNew = true, details = {}, close }) {
               </InputLabel>
               <Input
                 id="Password"
-                type="text"
+                type="password"
                 defaultValue={!isNew ? details.Password : null}
                 name="Password"
                 {...register("Password", {
@@ -252,7 +253,28 @@ function StaffForm({ isNew = true, details = {}, close }) {
                 </FormHelperText>
               )}
             </FormControl>
-
+            <FormControl fullWidth sx={{ marginY: "0.6rem" }}>
+              <InputLabel htmlFor="ConfirmPassword" variant="standard">
+                Confirm Password *
+              </InputLabel>
+              <Input
+                {...register("confirm_password", {
+                  validate: (value) => watch("Password") === value,
+                })} // custom message
+                variant="standard"
+                id="confirmPassword"
+                type="password"
+              />
+              {errors.confirm_password && (
+                <FormHelperText sx={{ color: "#D72A2A" }} id="my-helper-text">
+                  {errors.confirm_password && (
+                    <Typography variant="caption" color="error">
+                      Passwords don't match!
+                    </Typography>
+                  )}
+                </FormHelperText>
+              )}
+            </FormControl>
             <Box
               pt={2}
               sx={{ display: "flex", justifyContent: "space-around" }}

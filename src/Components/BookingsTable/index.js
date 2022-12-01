@@ -234,7 +234,11 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
   const getDate = (date) => {
     const newdate = new Date(date);
     return (
-      newdate.getFullYear() + "/" + newdate.getMonth() + "/" + newdate.getDate()
+      newdate.getFullYear() +
+      "/" +
+      (newdate.getMonth() + 1) +
+      "/" +
+      newdate.getDate()
     );
   };
 
@@ -243,7 +247,7 @@ function ExpandableTableRow({ row, index, isSelected, handleClick, openForm }) {
     return (
       newdate.getFullYear() +
       "/" +
-      newdate.getMonth() +
+      (newdate.getMonth() + 1) +
       "/" +
       newdate.getDate() +
       " " +

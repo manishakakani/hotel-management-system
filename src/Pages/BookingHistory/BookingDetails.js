@@ -10,7 +10,7 @@ function BookingDetails({ details, roomNumbers, roomType, closeDialog }) {
     return (
       tempDate.getFullYear() +
       "/" +
-      tempDate.getMonth() +
+      (tempDate.getMonth() + 1) +
       "/" +
       tempDate.getDate()
     );
